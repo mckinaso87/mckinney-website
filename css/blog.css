@@ -179,22 +179,4 @@
     }
 }
 
-/* Remove any old signature-related styles */
-.logo {
-    height: 60px;
-    width: auto;
-    display: flex;
-    align-items: center;
-}
-
-.logo img {
-    height: 100%;
-    width: auto;
-    transition: all 0.3s ease;
-    filter: drop-shadow(0 0 8px rgba(0, 119, 181, 0.2));
-}
-
-.logo img:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 12px rgba(0, 119, 181, 0.3));
-}
+/* Remove logo styles as they're now handled in styles.css */
