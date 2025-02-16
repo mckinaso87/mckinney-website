@@ -477,6 +477,42 @@ section {
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
+/* Signature styles */
+.signature {
+    font-family: 'Parisienne', cursive;
+    font-size: 2.5rem;
+    color: var(--chocolate);
+    margin: 1rem 0;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    display: inline-block;
+    position: relative;
+    transform: rotate(-5deg);
+    transition: transform 0.3s ease;
+}
+
+.signature:hover {
+    transform: rotate(-3deg) scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .signature {
+        font-size: 1.8rem;
+        margin: 0.5rem 0;
+        transform: rotate(-3deg);
+    }
+
+    .signature:hover {
+        transform: rotate(-2deg) scale(1.02);
+    }
+}
+
+@media (max-width: 480px) {
+    .signature {
+        font-size: 1.5rem;
+        transform: rotate(-2deg);
+    }
+}
+
 /* Footer */
 footer {
     background-color: var(--charcoal);
