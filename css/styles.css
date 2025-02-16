@@ -202,7 +202,7 @@ section {
 .hero {
     text-align: center;
     padding: 6rem 2rem;
-    background: linear-gradient(rgba(30, 30, 30, 0.85), rgba(30, 30, 30, 0.85)), url('../assets/images/hero-bg.jpg');
+    background: linear-gradient(rgba(30, 30, 30, 0.85), rgba(30, 30, 30, 0.85)), url('../assets/images/hero-bg.JPG');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
