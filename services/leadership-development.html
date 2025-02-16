@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Leadership Development - David McKinney</title>
+    <link rel="stylesheet" href="../css/styles.css?v=1.0.2">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../assets/images/signature-logo.png" alt="David McKinney's Signature Logo">
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav-links">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li class="dropdown">
+                        <a href="../index.html#services">Services</a>
+                        <div class="dropdown-content">
+                            <a href="business-growth.html">Business Growth</a>
+                            <a href="leadership-development.html" class="active">Leadership Development</a>
+                            <a href="career-advancement.html">Career Advancement</a>
+                        </div>
+                    </li>
+                    <li><a href="../blog/">Blog</a></li>
+                    <li><a href="https://cal.com/mckinney" class="nav-cta">Schedule a Call</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="service-hero">
+            <div class="service-hero-content">
+                <h1>Leadership Development</h1>
+                <p>Unlock your leadership potential and build high-performing teams.</p>
+            </div>
+        </section>
+
+        <section class="service-details">
+            <div class="service-content">
+                <h2>Develop Strong Leadership Skills</h2>
+                <p>Effective leadership is about inspiring others, making strategic decisions, and creating a positive organizational culture that drives success.</p>
+                
+                <div class="service-features">
+                    <div class="feature">
+                        <h3>Executive Coaching</h3>
+                        <p>One-on-one coaching to enhance your leadership capabilities and overcome specific challenges.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Team Development</h3>
+                        <p>Build and lead high-performing teams through effective communication and collaboration strategies.</p>
+                    </div>
+                    <div class="feature">
+                        <h3>Change Management</h3>
+                        <p>Navigate organizational change while maintaining team engagement and productivity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2>Ready to Enhance Your Leadership Skills?</h2>
+            <p>Let's work together to develop your leadership potential.</p>
+            <a href="https://cal.com/mckinney" class="cta-button">Schedule a Consultation</a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 David McKinney. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            // Toggle mobile menu
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+
+            // Handle dropdowns
+            dropdowns.forEach(dropdown => {
+                const link = dropdown.querySelector('a');
+                const content = dropdown.querySelector('.dropdown-content');
+
+                if (link && content) {
+                    link.addEventListener('click', function(e) {
+                        if (window.innerWidth <= 768) {
+                            e.preventDefault();
+                            content.classList.toggle('show');
+                        }
+                    });
+                }
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!navLinks.contains(event.target) && !menuToggle.contains(event.target)) {
+                    navLinks.classList.remove('active');
+                    dropdowns.forEach(dropdown => {
+                        const content = dropdown.querySelector('.dropdown-content');
+                        if (content) {
+                            content.classList.remove('show');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
