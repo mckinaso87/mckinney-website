@@ -267,10 +267,11 @@ nav {
         max-width: 100%;
     }
 
-    .about-image {
+    .about-image img {
         width: 100%;
-        max-width: 300px;
-        margin: 0 auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
     }
 }
 
@@ -470,8 +471,8 @@ main {
 
 .about-image img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+    object-fit: contain;
     display: block;
 }
 
@@ -738,15 +739,15 @@ footer {
 
     .about-image {
         width: 100%;
-        max-width: none;
-        height: 300px;
-        margin: 0;
+        max-width: 300px;
+        margin: 0 auto;
     }
 
     .about-image img {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
+        object-fit: contain;
+        display: block;
     }
 
     /* Services section */
