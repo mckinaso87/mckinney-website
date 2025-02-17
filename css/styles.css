@@ -141,6 +141,21 @@ nav {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     .mobile-menu-toggle {
         display: block;
     }
@@ -334,6 +349,21 @@ section, .dark-section, .light-section {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     section, .dark-section, .light-section {
         padding: 2rem;
         margin: 2rem auto;
@@ -596,6 +626,21 @@ main {
 }
 
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     .signature {
         font-size: 1.8rem;
         margin: 0.5rem 0;
@@ -665,6 +710,21 @@ footer {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     /* Base layout */
     main {
         margin-top: 60px;
@@ -871,6 +931,21 @@ p {
 }
 
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     .section-spacer {
         height: 2rem;
         margin: 0;
@@ -944,6 +1019,21 @@ p {
 
 /* Mobile Menu Enhancements */
 @media (max-width: 768px) {
+@media (max-width: 768px) {
+    .about-image {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        height: auto;
+    }
+
+    .about-image img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        display: block;
+    }
+}
     .nav-links {
         display: none;
         position: fixed;
