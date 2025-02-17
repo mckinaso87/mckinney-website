@@ -62,11 +62,15 @@ nav {
 
 .logo {
     height: 35px;
+    position: relative;
+    z-index: 1001; /* Ensure logo stays above other elements */
 }
 
 .logo img {
     height: 100%;
     width: auto;
+    max-width: 200px; /* Prevent logo from getting too wide */
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.1)); /* Subtle shadow for better visibility */
 }
 
 /* Navigation Links */
@@ -153,6 +157,10 @@ nav {
 @media (max-width: 768px) {
     .mobile-menu-toggle {
         display: block;
+    }
+
+    .logo {
+        height: 28px; /* Slightly smaller on mobile */
     }
 
     .nav-links {
