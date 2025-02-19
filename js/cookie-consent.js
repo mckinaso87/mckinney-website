@@ -2,19 +2,22 @@ class CookieConsent {
     constructor() {
         this.consentKey = 'cookie-consent-set';
         this.createBanner();
-        this.checkConsent();
+        // Small delay to ensure smooth animation
+        setTimeout(() => this.checkConsent(), 1000);
     }
 
     createBanner() {
         const banner = document.createElement('div');
         banner.id = 'cookie-consent-banner';
+        banner.style.opacity = '0';
+        banner.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
         banner.innerHTML = `
             <div class="cookie-content">
-                <p>This website uses cookies to enhance your experience and analyze site traffic. 
-                   By clicking "Accept", you consent to our use of cookies.</p>
+                <p>We use cookies to enhance your browsing experience and analyze site traffic. 
+                   Your privacy is important to us.</p>
                 <div class="cookie-buttons">
-                    <button id="accept-cookies">Accept</button>
-                    <button id="reject-cookies">Reject</button>
+                    <button id="accept-cookies">Accept All</button>
+                    <button id="reject-cookies">Reject All</button>
                     <a href="/privacy/cookie-consent.html">Cookie Settings</a>
                 </div>
             </div>
@@ -28,13 +31,23 @@ class CookieConsent {
 
     checkConsent() {
         if (!localStorage.getItem(this.consentKey)) {
-            document.getElementById('cookie-consent-banner').style.display = 'block';
+            const banner = document.getElementById('cookie-consent-banner');
+            banner.style.display = 'block';
+            // Force reflow
+            banner.offsetHeight;
+            banner.style.opacity = '1';
         }
     }
 
     setConsent(accepted) {
         localStorage.setItem(this.consentKey, accepted);
-        document.getElementById('cookie-consent-banner').style.display = 'none';
+        const banner = document.getElementById('cookie-consent-banner');
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            banner.style.display = 'none';
+        }, 300);
         
         // If accepted, initialize Google Analytics
         if (accepted && typeof gtag === 'function') {
