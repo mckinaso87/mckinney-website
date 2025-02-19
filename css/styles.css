@@ -952,6 +952,31 @@ p {
         padding: 0;
     }
 }
+
+/* Osano Cookie Banner Mobile Styles */
+.osano-cm-widget {
+    font-family: 'Inter', sans-serif !important;
+}
+
+@media (max-width: 768px) {
+    .osano-cm-dialog {
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    .osano-cm-button {
+        padding: 8px 16px !important;
+        margin: 4px !important;
+        font-size: 14px !important;
+    }
+
+    .osano-cm-content {
+        padding: 16px !important;
+        font-size: 14px !important;
+    }
+}
+
 /* Modern Navigation Styles */
 .nav-links a {
     color: var(--text-light);
