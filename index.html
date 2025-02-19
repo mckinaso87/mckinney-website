@@ -18,6 +18,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+      
+      // Default to denied
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied'
+      });
 
       gtag('config', 'G-Y8H1P7LSF3');
     </script>
@@ -135,5 +140,6 @@
     </footer>
 
     <script src="js/main.js"></script>
-</body>
+    <script src="js/cookie-consent.js"></script>
+  </body>
 </html>
