@@ -1,4 +1,8 @@
 /* Resume Styles */
+body {
+    background: var(--dark-mode-bg);
+}
+
 .resume-container {
     max-width: 1000px;
     margin: 2rem auto;
@@ -6,6 +10,7 @@
     background: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: #1e293b;
 }
 
 .resume-header {
@@ -17,14 +22,20 @@
 
 .resume-header h1 {
     font-size: 2.5rem;
-    color: var(--dark-mode-bg);
+    color: #1e293b;
     margin-bottom: 0.5rem;
+    font-weight: 700;
 }
 
 .resume-header .title {
-    font-size: 1.25rem;
-    color: var(--sky);
+    font-size: 1.1rem;
+    color: #475569;
     margin-bottom: 1.5rem;
+    font-weight: 600;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
 }
 
 .contact-info {
@@ -33,18 +44,18 @@
     gap: 2rem;
     flex-wrap: wrap;
     font-size: 1rem;
-    color: var(--dark-mode-bg);
+    color: #1e293b;
     margin-bottom: 1.5rem;
 }
 
 .contact-info a {
-    color: var(--sky);
+    color: #475569;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
 .contact-info a:hover {
-    color: var(--sky-light);
+    color: #6b7280;
     text-decoration: underline;
 }
 
@@ -57,7 +68,7 @@
 .contact-item svg {
     width: 18px;
     height: 18px;
-    fill: var(--sky);
+    fill: #475569;
 }
 
 .resume-cta {
@@ -75,13 +86,13 @@
 }
 
 .resume-cta .primary {
-    background: var(--sky);
+    background: #475569;
     color: white;
 }
 
 .resume-cta .secondary {
-    border: 1px solid var(--sky);
-    color: var(--sky);
+    border: 1px solid #475569;
+    color: #475569;
 }
 
 .resume-cta a:hover {
@@ -94,7 +105,7 @@
 }
 
 .resume-section h2 {
-    color: var(--sky);
+    color: #475569;
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
@@ -102,7 +113,7 @@
 }
 
 .section-content {
-    color: var(--dark-mode-bg);
+    color: #1e293b;
     line-height: 1.6;
 }
 
@@ -125,19 +136,19 @@
 }
 
 .experience-item h3 {
-    color: var(--dark-mode-bg);
+    color: #1e293b;
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
 }
 
 .experience-item .company {
-    color: var(--sky);
+    color: #475569;
     font-weight: 500;
     margin-bottom: 0.25rem;
 }
 
 .experience-item .date {
-    color: var(--text-light-muted);
+    color: #6b7280;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
@@ -159,8 +170,8 @@
 }
 
 #download-pdf {
-    background: var(--sky);
-    color: var(--dark-mode-bg);
+    background: #475569;
+    color: #1e293b;
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 8px;
@@ -170,7 +181,7 @@
 }
 
 #download-pdf:hover {
-    background: var(--sky-light);
+    background: #6b7280;
     transform: translateY(-1px);
 }
 
