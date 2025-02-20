@@ -369,6 +369,43 @@ body {
     background: rgba(71, 85, 105, 0.3);
 }
 
+.education-item {
+    margin-bottom: 2rem;
+}
+
+.education-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.degree-info h3 {
+    color: #e2e8f0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.major {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.education-date {
+    color: #94a3b8;
+    font-size: 1rem;
+    white-space: nowrap;
+    margin-left: 1rem;
+}
+
+.institution {
+    color: #e2e8f0;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
 /* Print Styles */
 @media print {
     body {
@@ -476,6 +513,19 @@ body {
     .client-section h4 {
         color: #1e293b;
     }
+
+    .degree-info h3 {
+        color: #000000;
+    }
+
+    .major,
+    .education-date {
+        color: #475569;
+    }
+
+    .institution {
+        color: #000000;
+    }
 }
 
 /* Mobile Styles */
@@ -523,5 +573,14 @@ body {
 
     .expertise-list {
         grid-template-columns: 1fr;
+    }
+
+    .education-header {
+        flex-direction: column;
+    }
+
+    .education-date {
+        margin-left: 0;
+        margin-top: 0.5rem;
     }
 }
