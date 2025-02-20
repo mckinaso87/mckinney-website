@@ -117,6 +117,23 @@ body {
     line-height: 1.6;
 }
 
+.section-content p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.section-content p:last-child {
+    margin-bottom: 0;
+}
+
+#professional-summary .section-content {
+    max-width: 800px;
+}
+
+#professional-summary .section-content p {
+    line-height: 1.8;
+}
+
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
