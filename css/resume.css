@@ -105,25 +105,24 @@ body {
 }
 
 .resume-section h2 {
-    color: #475569;
-    font-size: 1.5rem;
+    color: #1e293b;
+    font-size: 1.75rem;
     margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #0ea5e9;
+    font-weight: 600;
+    letter-spacing: -0.02em;
 }
 
 .section-content {
-    color: #1e293b;
+    color: #334155;
     line-height: 1.6;
 }
 
 .section-content p {
     margin-bottom: 1rem;
-    font-size: 1rem;
-}
-
-.section-content p:last-child {
-    margin-bottom: 0;
+    font-size: 1.05rem;
+    color: #334155;
 }
 
 #professional-summary .section-content {
@@ -132,6 +131,7 @@ body {
 
 #professional-summary .section-content p {
     line-height: 1.8;
+    font-weight: 400;
 }
 
 .skills-grid {
@@ -225,11 +225,13 @@ body {
     }
 
     .resume-section h2 {
-        color: #0ea5e9;
+        color: #000000;
+        border-bottom-color: #0ea5e9;
     }
 
-    .section-content {
-        color: black;
+    .section-content,
+    .section-content p {
+        color: #000000;
     }
 
     .experience-item .company {
