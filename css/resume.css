@@ -3,7 +3,7 @@
     max-width: 1000px;
     margin: 2rem auto;
     padding: 2rem;
-    background: var(--dark-mode-bg);
+    background: white;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -12,19 +12,19 @@
     text-align: center;
     margin-bottom: 3rem;
     padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .resume-header h1 {
     font-size: 2.5rem;
-    color: var(--text-light);
+    color: var(--dark-mode-bg);
     margin-bottom: 0.5rem;
 }
 
 .resume-header .title {
     font-size: 1.25rem;
     color: var(--sky);
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 .contact-info {
@@ -32,8 +32,60 @@
     justify-content: center;
     gap: 2rem;
     flex-wrap: wrap;
-    font-size: 0.9rem;
-    color: var(--text-light);
+    font-size: 1rem;
+    color: var(--dark-mode-bg);
+    margin-bottom: 1.5rem;
+}
+
+.contact-info a {
+    color: var(--sky);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+    color: var(--sky-light);
+    text-decoration: underline;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.contact-item svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--sky);
+}
+
+.resume-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.resume-cta a {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.resume-cta .primary {
+    background: var(--sky);
+    color: white;
+}
+
+.resume-cta .secondary {
+    border: 1px solid var(--sky);
+    color: var(--sky);
+}
+
+.resume-cta a:hover {
+    transform: translateY(-1px);
 }
 
 .resume-section {
@@ -50,7 +102,7 @@
 }
 
 .section-content {
-    color: var(--text-light);
+    color: var(--dark-mode-bg);
     line-height: 1.6;
 }
 
@@ -73,7 +125,7 @@
 }
 
 .experience-item h3 {
-    color: var(--text-light);
+    color: var(--dark-mode-bg);
     font-size: 1.1rem;
     margin-bottom: 0.25rem;
 }
