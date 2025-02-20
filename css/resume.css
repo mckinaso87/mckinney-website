@@ -271,6 +271,31 @@ body {
     color: #64748b;
 }
 
+.role-section {
+    margin-top: 1.5rem;
+}
+
+.role-section h4 {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.role-section .section-intro {
+    color: #e2e8f0;
+    margin-bottom: 1rem;
+    font-style: italic;
+}
+
+.role-section .achievements {
+    margin-bottom: 1.5rem;
+}
+
+.role-section:last-child .achievements {
+    margin-bottom: 0;
+}
+
 /* Print Styles */
 @media print {
     body {
@@ -343,6 +368,15 @@ body {
 
     .skills-list li::before {
         color: #475569;
+    }
+
+    .role-section h4 {
+        color: #1e293b;
+    }
+
+    .role-section .section-intro {
+        color: #000000;
+        font-style: italic;
     }
 }
 
