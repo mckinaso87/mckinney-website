@@ -1,6 +1,3 @@
 User-agent: *
-Disallow: /resume
-Disallow: /resume.html
 Disallow: /resume/
-Disallow: */resume
-Disallow: */resume.html
+Disallow: /resume/index.html
