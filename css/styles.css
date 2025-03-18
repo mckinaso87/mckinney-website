@@ -787,7 +787,13 @@ footer {
 .linkedin-button svg {
     width: 24px;
     height: 24px;
-    fill: currentColor;
+    fill: #0A66C2; /* LinkedIn brand color */
+    transition: fill 0.3s ease;
+    background: none !important;
+}
+
+.linkedin-button:hover svg {
+    fill: #004182; /* Darker LinkedIn blue on hover */
 }
 
 /* Responsive adjustments */
@@ -1331,10 +1337,11 @@ footer a:active,
 .linkedin-button svg {
     width: 24px;
     height: 24px;
-    fill: var(--chocolate-700);
+    fill: #0A66C2; /* LinkedIn brand color */
     transition: fill 0.3s ease;
+    background: none !important;
 }
 
 .linkedin-button:hover svg {
-    fill: var(--chocolate-600);
+    fill: #004182; /* Darker LinkedIn blue on hover */
 }
