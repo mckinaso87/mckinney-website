@@ -1299,3 +1299,30 @@ p {
     margin-top: 1rem;
     display: inline-block;
 }
+
+/* Footer Links */
+footer a {
+    color: var(--chocolate-700);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--chocolate-600);
+}
+
+.linkedin-button {
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+.linkedin-button svg {
+    width: 24px;
+    height: 24px;
+    fill: var(--chocolate-700);
+    transition: fill 0.3s ease;
+}
+
+.linkedin-button:hover svg {
+    fill: var(--chocolate-600);
+}
