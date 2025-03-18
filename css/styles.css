@@ -1058,6 +1058,16 @@ p {
     color: var(--text-light) !important;
 }
 
+/* Footer Cookie Settings Link */
+.osano-cm-link {
+    color: var(--chocolate-700) !important;
+    transition: color 0.3s ease !important;
+}
+
+.osano-cm-link:hover {
+    color: var(--chocolate-600) !important;
+}
+
 /* Modern Navigation Styles */
 .nav-links a {
     color: var(--text-light);
