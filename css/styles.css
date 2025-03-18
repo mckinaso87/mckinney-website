@@ -418,7 +418,7 @@ section, .dark-section, .light-section {
     background: var(--charcoal);
     color: var(--text-light);
     padding: 4rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
 .light-section {
@@ -772,15 +772,15 @@ footer {
     justify-content: center;
     width: 40px;
     height: 40px;
-    background-color: var(--accent-blue);
+    background: none !important;
+    border: none !important;
     color: var(--text-light);
     text-decoration: none;
-    border-radius: 50%;
     transition: all 0.3s ease;
 }
 
 .linkedin-button:hover {
-    background-color: #005885;
+    background: none !important;
     transform: translateY(-2px);
 }
 
@@ -1301,19 +1301,31 @@ p {
 }
 
 /* Footer Links */
-footer a {
-    color: var(--chocolate-700);
-    text-decoration: none;
-    transition: color 0.3s ease;
+footer a,
+footer a:link,
+footer a:visited,
+.footer-content a,
+.footer-content a:link,
+.footer-content a:visited {
+    color: var(--chocolate-700) !important;
+    text-decoration: none !important;
+    transition: color 0.3s ease !important;
 }
 
-footer a:hover {
-    color: var(--chocolate-600);
+footer a:hover,
+footer a:active,
+.footer-content a:hover,
+.footer-content a:active {
+    color: var(--chocolate-600) !important;
+    text-decoration: none !important;
 }
 
+/* LinkedIn button specific styles */
 .linkedin-button {
     display: inline-block;
     margin-left: 1rem;
+    background: none !important;
+    border: none !important;
 }
 
 .linkedin-button svg {
