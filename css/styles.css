@@ -1029,6 +1029,35 @@ p {
     }
 }
 
+/* Osano Cookie Consent Styling */
+.osano-cm-widget {
+    --osano-color-primary: var(--chocolate-700) !important;
+    --osano-color-secondary: var(--chocolate-600) !important;
+}
+
+.osano-cm-button {
+    background: var(--chocolate-700) !important;
+    border: none !important;
+    transition: background-color 0.3s ease !important;
+}
+
+.osano-cm-button:hover {
+    background: var(--chocolate-600) !important;
+}
+
+.osano-cm-button.osano-cm-button--type_manage {
+    background: transparent !important;
+    color: var(--chocolate-700) !important;
+}
+
+.osano-cm-button.osano-cm-button--type_manage:hover {
+    color: var(--chocolate-600) !important;
+}
+
+.osano-cm-info {
+    color: var(--text-light) !important;
+}
+
 /* Modern Navigation Styles */
 .nav-links a {
     color: var(--text-light);
@@ -1071,7 +1100,7 @@ p {
 .nav-cta:hover {
     background-color: transparent;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 /* Cookie Consent Banner */
