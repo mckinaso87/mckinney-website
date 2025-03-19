@@ -1,7 +1,8 @@
-/* Version 1.0.1 - Feb 2025 - Updated with white logo */
+/* Version 1.0.2 - March 2025 - Two-tone transparency theme */
 
 /* Base styles */
 :root {
+    /* Core colors */
     --charcoal-dark: #2B2B2B;
     --charcoal: #333333;
     --charcoal-light: #404040;
@@ -13,6 +14,45 @@
     --accent-blue: #0077B5;
     --text-light: #FFFFFF;
     --text-muted: #B0BEC5;
+    
+    /* Background options - uncomment one set */
+    
+    /* Option 1: Warm Gray (Current) */
+    /*
+    --bg-primary: #F8F6F1;
+    --bg-secondary: #F5E6D3;
+    */
+    
+    /* Option 2: Cool Professional */
+    --bg-primary: #F4F6F8;
+    --bg-secondary: #E8ECF0;
+    
+    /* Option 3: Subtle Earth */
+    /*
+    --bg-primary: #F6F4F1;
+    --bg-secondary: #EBE6E0;
+    */
+    
+    /* Option 4: Warm Stone */
+    /*
+    --bg-primary: #F5F2ED;
+    --bg-secondary: #E9E4DD;
+    */
+    
+    /* Option 5: Soft Parchment */
+    /*
+    --bg-primary: #F7F4EE;
+    --bg-secondary: #EDE8E0;
+    */
+    
+    /* Transparency and UI colors */
+    --header-bg: rgba(43, 43, 43, 0.95);
+    --card-bg: rgba(51, 51, 51, 0.97);
+    --card-hover: rgba(64, 64, 64, 0.98);
+    --chocolate-trans: rgba(107, 68, 35, 0.95);
+    --chocolate-light-trans: rgba(139, 94, 52, 0.9);
+    
+    /* Measurements */
     --border-radius: 12px;
     --border-radius-lg: 20px;
     --max-width: 1400px;
@@ -37,7 +77,8 @@ body {
     font-family: 'Inter', sans-serif;
     line-height: 1.6;
     color: var(--text-light);
-    background-color: var(--bone-white);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background-attachment: fixed;
     font-size: var(--text-base);
 }
 
@@ -47,8 +88,11 @@ header {
     top: 0;
     left: 0;
     right: 0;
-    background-color: var(--charcoal);
+    background-color: var(--header-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 1000;
+    transition: background-color 0.3s ease;
 }
 
 nav {
@@ -98,6 +142,22 @@ nav {
     padding: 0.5rem;
     display: inline-block;
     transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--chocolate-light);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .nav-links a:hover {
@@ -124,17 +184,30 @@ nav {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--charcoal);
+    background-color: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
     padding: 0.5rem 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1001;
 }
 
 .dropdown:hover .dropdown-content {
     display: block !important;
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.dropdown-content a:hover {
+    background-color: var(--charcoal-light);
 }
 
 /* Mobile Menu */
@@ -622,22 +695,20 @@ main {
 }
 
 .service-card {
-    background: var(--charcoal-dark);
+    background-color: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 2rem;
     border-radius: var(--border-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 2rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
+    background-color: var(--card-hover);
+    transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .service-card h3 {
@@ -689,7 +760,10 @@ main {
     display: inline-block;
     font-size: var(--text-sm);
     padding: 0.6rem 1.5rem;
-    background-color: var(--chocolate-light);
+    background-color: var(--chocolate-trans);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     color: var(--text-light);
     text-decoration: none;
     border-radius: var(--border-radius);
@@ -699,10 +773,9 @@ main {
 }
 
 .cta-button:hover, .nav-cta:hover {
-    background-color: var(--chocolate);
-    color: var(--cream);
+    background-color: var(--chocolate-light-trans);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(107, 68, 35, 0.2);
 }
 
 /* Signature styles */
@@ -1106,11 +1179,11 @@ p {
 
 /* Enhanced CTA button */
 .nav-cta {
-    background-color: var(--chocolate);
+    background-color: var(--chocolate-trans);
     padding: 0.6rem 1.2rem !important;
     border-radius: var(--border-radius);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    border: 2px solid var(--chocolate);
+    border: 2px solid var(--chocolate-trans);
 }
 
 .nav-cta:hover {
@@ -1170,12 +1243,12 @@ p {
 }
 
 .cookie-buttons button:first-child {
-    background: var(--chocolate);
+    background: var(--chocolate-trans);
     color: var(--text-light);
 }
 
 .cookie-buttons button:first-child:hover {
-    background: var(--chocolate-light);
+    background: var(--chocolate-light-trans);
     transform: translateY(-1px);
 }
 
@@ -1245,12 +1318,14 @@ p {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background: var(--charcoal);
+    background-color: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px;
     padding: 0.5rem 0;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1001;
 }
 
