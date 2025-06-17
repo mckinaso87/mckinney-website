@@ -20,60 +20,67 @@ async function initializeClerk(contentElementId, loadingElementId) {
     if (loadingElement) loadingElement.style.display = 'flex';
     
     try {
-        // Initialize Clerk with minimal configuration
-        window.Clerk = window.Clerk || {};
-        window.clerkAsyncInit = function() {
-            Clerk.load({
-                publishableKey: clerkPublishableKey
-            });
-        };
-        
-        // Wait for Clerk to be fully loaded
-        await new Promise(resolve => {
-            if (window.Clerk && window.Clerk.isReady()) {
-                resolve();
-                return;
-            }
-            
-            const checkInterval = setInterval(() => {
-                if (window.Clerk && window.Clerk.isReady()) {
-                    clearInterval(checkInterval);
-                    resolve();
-                }
-            }, 100);
-            
-            // Set a timeout to avoid waiting forever
-            setTimeout(() => {
-                clearInterval(checkInterval);
-                resolve();
-            }, 5000);
-        });
-        
-        // Remove any query parameters to prevent loops
-        if (window.location.search) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-        
-        // Check if user is authenticated
-        const isAuthenticated = window.Clerk && window.Clerk.user;
-        
-        if (isAuthenticated) {
-            // User is authenticated, show content
-            if (contentElement) contentElement.style.display = 'block';
-            
-            // Mount user button if it exists
-            const userButtonElement = document.getElementById('user-button');
-            if (userButtonElement) {
-                Clerk.mountUserButton(userButtonElement, {
-                    afterSignOutUrl: 'https://accounts.mckinney.es/sign-in'
+        // Load Clerk script if not already loaded
+        if (!window.Clerk) {
+            // Set up Clerk async init
+            window.clerkAsyncInit = function() {
+                Clerk.load({
+                    publishableKey: clerkPublishableKey
                 });
-            }
+            };
+            
+            // Wait for Clerk to load
+            await new Promise((resolve) => {
+                const checkClerk = setInterval(() => {
+                    if (window.Clerk) {
+                        clearInterval(checkClerk);
+                        resolve();
+                    }
+                }, 100);
+                
+                // Timeout after 5 seconds
+                setTimeout(() => {
+                    clearInterval(checkClerk);
+                    resolve();
+                }, 5000);
+            });
         }
         
-        // Hide loading indicator
-        if (loadingElement) loadingElement.style.display = 'none';
-        
-        return isAuthenticated;
+        // Wait for Clerk to be ready
+        if (window.Clerk) {
+            // Wait a moment for Clerk to initialize
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Check if user is authenticated
+            const isAuthenticated = !!window.Clerk.user;
+            
+            // Remove any query parameters to prevent loops
+            if (window.location.search) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+            
+            if (isAuthenticated) {
+                // User is authenticated, show content
+                if (contentElement) contentElement.style.display = 'block';
+                
+                // Mount user button if it exists
+                const userButtonElement = document.getElementById('user-button');
+                if (userButtonElement && window.Clerk.mountUserButton) {
+                    window.Clerk.mountUserButton(userButtonElement, {
+                        afterSignOutUrl: 'https://accounts.mckinney.es/sign-in'
+                    });
+                }
+            }
+            
+            // Hide loading indicator
+            if (loadingElement) loadingElement.style.display = 'none';
+            
+            return isAuthenticated;
+        } else {
+            // Clerk failed to load
+            if (loadingElement) loadingElement.style.display = 'none';
+            return false;
+        }
     } catch (error) {
         console.error('Error initializing Clerk:', error);
         
