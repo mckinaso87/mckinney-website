@@ -117,37 +117,36 @@
                     });
                 }
                 
+                // IMPORTANT: NO AUTOMATIC REDIRECTS
                 // Check if user is signed in
                 if (!Clerk.user) {
-                    // Only redirect if we haven't attempted auth already
-                    if (authAttempted !== 'true') {
-                        // Set the flag to prevent future redirects
-                        sessionStorage.setItem('authAttempted', 'true');
-                        // Redirect to sign-in
-                        window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                            encodeURIComponent('https://mckinney.es/resume/index.html');
-                        return;
-                    } else {
-                        // Show a sign-in button instead of redirecting
-                        const authDiv = document.createElement('div');
-                        authDiv.className = 'auth-prompt';
-                        authDiv.style.textAlign = 'center';
-                        authDiv.style.padding = '2rem';
-                        authDiv.style.maxWidth = '600px';
-                        authDiv.style.margin = '2rem auto';
-                        authDiv.innerHTML = `
-                            <h2>Authentication Required</h2>
-                            <p>You need to be signed in to access this page.</p>
-                            <button class="auth-button" style="margin-top: 1rem;">Sign In</button>
-                        `;
-                        document.body.insertBefore(authDiv, document.querySelector('.resume-container'));
-                        authDiv.querySelector('button').addEventListener('click', function() {
-                            sessionStorage.removeItem('authAttempted');
-                            window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                                encodeURIComponent('https://mckinney.es/resume/index.html');
-                        });
-                        return;
+                    // User is not signed in, show sign-in UI
+                    // Create auth prompt
+                    const authDiv = document.createElement('div');
+                    authDiv.className = 'auth-prompt';
+                    authDiv.style.textAlign = 'center';
+                    authDiv.style.padding = '2rem';
+                    authDiv.style.backgroundColor = '#fff';
+                    authDiv.style.borderRadius = '8px';
+                    authDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                    authDiv.style.margin = '100px auto';
+                    authDiv.style.maxWidth = '500px';
+                    
+                    authDiv.innerHTML = `
+                        <h2>Authentication Required</h2>
+                        <p>You need to be signed in to access the Resume.</p>
+                        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Sign In</a>
+                    `;
+                    
+                    // Hide resume content
+                    const resumeContainer = document.querySelector('.resume-container');
+                    if (resumeContainer) {
+                        resumeContainer.style.display = 'none';
                     }
+                    
+                    // Insert before container
+                    document.body.insertBefore(authDiv, resumeContainer);
+                    return;
                 }
                 
                 // Mount the UserButton if the element exists

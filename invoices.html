@@ -110,205 +110,6 @@
             --success-color: #10b981;
             
             /* Measurements */
-            --border-radius: 12px;
-            --border-radius-lg: 20px;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: var(--charcoal);
-            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-            background-attachment: fixed;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 7rem 1rem 2rem; /* Increased top padding to account for fixed header */
-        }
-        
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background-color: var(--header-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 1000;
-            padding: 0;
-            margin-bottom: 2rem;
-        }
-        
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.5rem 2rem;
-            max-width: var(--max-width);
-            margin: 0 auto;
-            height: 60px; /* Fixed height for consistent navigation */
-        }
-        
-        .logo img {
-            height: 32px; /* Reduced logo size */
-            width: auto;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-left: 1rem;
-        }
-        
-        .user-info img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-        }
-        
-        /* Improved navigation layout */
-        .nav-links {
-            margin-left: auto;
-        }
-        
-        .nav-links ul {
-            display: flex;
-            list-style: none;
-            gap: 1.5rem;
-            align-items: center;
-        }
-        
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-size: var(--text-sm);
-            transition: color 0.3s ease;
-        }
-        
-        .nav-links a:hover {
-            color: var(--cream);
-        }
-        
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--chocolate);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-        
-        .card {
-            background-color: var(--card-bg);
-            color: var(--text-light);
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        
-        button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(107, 68, 35, 0.2);
-        }
-        
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(107, 68, 35, 0.3);
-        }
-        
-        .loading {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-        
-        .spinner {
-            border: 3px solid rgba(0, 0, 0, 0.1);
-            border-radius: 50%;
-            border-top: 3px solid var(--primary-color);
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .alert {
-            padding: 1rem;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .alert-error {
-            background-color: #fef2f2;
-            color: var(--error-color);
-            border: 1px solid #fee2e2;
-        }
-        
-        .alert-success {
-            background-color: #ecfdf5;
-            color: var(--success-color);
             border: 1px solid #d1fae5;
         }
         
@@ -430,10 +231,11 @@
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('invoice-date').value = today;
         
-        // Initialize Clerk with proper authentication
+        // Initialize Clerk with manual authentication approach
         async function initializeClerk() {
             // Show loading indicator
             document.getElementById('loading-auth').style.display = 'flex';
+            
             try {
                 // Start Clerk
                 window.Clerk = window.Clerk || {};
@@ -458,36 +260,32 @@
                     });
                 }
                 
+                // IMPORTANT: NO AUTOMATIC REDIRECTS
                 // Check if user is signed in
                 if (!Clerk.user) {
-                    // Only redirect if we haven't attempted auth already
-                    if (authAttempted !== 'true') {
-                        // Set the flag to prevent future redirects
-                        sessionStorage.setItem('authAttempted', 'true');
-                        // Redirect to sign-in
-                        window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                            encodeURIComponent('https://mckinney.es/invoices.html');
-                        return;
-                    } else {
-                        // Show a sign-in button instead of redirecting
-                        document.getElementById('loading-auth').style.display = 'none';
-                        const authDiv = document.createElement('div');
-                        authDiv.className = 'auth-prompt';
-                        authDiv.style.textAlign = 'center';
-                        authDiv.style.padding = '2rem';
-                        authDiv.innerHTML = `
-                            <h2>Authentication Required</h2>
-                            <p>You need to be signed in to access this page.</p>
-                            <button class="auth-button" style="margin-top: 1rem;">Sign In</button>
-                        `;
-                        document.body.insertBefore(authDiv, document.querySelector('.container'));
-                        authDiv.querySelector('button').addEventListener('click', function() {
-                            sessionStorage.removeItem('authAttempted');
-                            window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                                encodeURIComponent('https://mckinney.es/invoices.html');
-                        });
-                        return;
-                    }
+                    // User is not signed in, show sign-in UI
+                    document.getElementById('loading-auth').style.display = 'none';
+                    
+                    // Create auth prompt
+                    const authDiv = document.createElement('div');
+                    authDiv.className = 'auth-prompt';
+                    authDiv.style.textAlign = 'center';
+                    authDiv.style.padding = '2rem';
+                    authDiv.style.backgroundColor = '#fff';
+                    authDiv.style.borderRadius = '8px';
+                    authDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                    authDiv.style.margin = '100px auto';
+                    authDiv.style.maxWidth = '500px';
+                    
+                    authDiv.innerHTML = `
+                        <h2>Authentication Required</h2>
+                        <p>You need to be signed in to access the Invoice Generator.</p>
+                        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Sign In</a>
+                    `;
+                    
+                    // Insert before container
+                    document.body.insertBefore(authDiv, document.querySelector('.container'));
+                    return;
                 }
                 
                 // User is signed in
