@@ -19,6 +19,10 @@ async function initializeClerk(contentElementId, loadingElementId) {
     const loadingElement = document.getElementById(loadingElementId);
     if (loadingElement) loadingElement.style.display = 'flex';
     
+    // Check if we're coming back from a sign-in redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const isRedirectBack = urlParams.has('__clerk_status') || urlParams.has('__clerk_error');
+    
     try {
         // Initialize Clerk without any automatic redirects
         window.Clerk = window.Clerk || {};
@@ -32,6 +36,13 @@ async function initializeClerk(contentElementId, loadingElementId) {
         
         // Wait for Clerk to be fully loaded and hydrated
         await waitForClerkHydration();
+        
+        // Clean up URL if we're coming back from a redirect
+        if (isRedirectBack) {
+            // Remove Clerk query parameters to prevent redirect loops
+            const cleanUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
         
         // Now check authentication state only after full hydration
         return checkAuthState(contentElementId, loadingElementId);
@@ -84,6 +95,17 @@ function checkAuthState(contentElementId, loadingElementId) {
     if (!window.Clerk || !window.Clerk.isReady()) {
         if (loadingElement) loadingElement.style.display = 'none';
         return false;
+    }
+    
+    // Check if we have a URL parameter from a redirect
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasRedirectParam = urlParams.has('__clerk_status') || urlParams.has('__clerk_error');
+    
+    // If we have redirect params, clean them up to prevent loops
+    if (hasRedirectParam) {
+        // Clean up the URL to prevent redirect loops
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, document.title, cleanUrl);
     }
     
     // Check if user is authenticated
@@ -144,10 +166,14 @@ function showAuthUI(message, container) {
     authDiv.style.margin = '100px auto';
     authDiv.style.maxWidth = '500px';
     
+    // Get the current page URL for redirect after sign-in
+    const currentUrl = encodeURIComponent(window.location.href);
+    const signInUrl = `https://accounts.mckinney.es/sign-in?redirect_url=${currentUrl}`;
+    
     authDiv.innerHTML = `
         <h2>Authentication Required</h2>
         <p>${message || 'You need to be signed in to access this content.'}</p>
-        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none; padding: 0.5rem 1rem; background-color: #007bff; color: white; border-radius: 4px;">Sign In</a>
+        <a href="${signInUrl}" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none; padding: 0.5rem 1rem; background-color: #007bff; color: white; border-radius: 4px;">Sign In</a>
     `;
     
     // Insert before container or append to body
