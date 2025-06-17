@@ -8,53 +8,65 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Clerk SDK for authentication -->
-    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
-    
     <style>
         /* Auth button styles */
-        /* UserButton styling */
-        #user-button {
-            min-width: 110px;
+        .auth-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .auth-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .auth-prompt {
+            text-align: center;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 100px auto;
+            max-width: 500px;
+        }
+        
+        #loading-auth {
             display: flex;
+            justify-content: center;
             align-items: center;
-            justify-content: flex-end;
-            height: 40px;
-        }
-        
-        /* Clerk UserButton overrides */
-        .cl-userButtonBox {
-            width: 110px !important;
-            height: 40px !important;
-        }
-        
-        .cl-userButtonAvatarBox {
-            width: 32px !important;
-            height: 32px !important;
-        }
-        
-        /* Fix for Clerk UserButton */
-        #user-button {
-            min-width: 110px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
         }
     </style>
     
+    <!-- Clerk SDK for authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+    
+    <!-- Import centralized authentication helper -->
+    <script src="clerk-auth.js"></script>
+    
     <script>
-        // Initialize Clerk with your publishable key
-        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
-        
         // Immediately hide the content until authentication is confirmed
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelector('.container').style.display = 'none';
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Initialize authentication
+            const isAuthenticated = await initializeClerk('invoice-container', 'loading-auth');
+            
+            // If not authenticated, show sign-in UI
+            if (!isAuthenticated) {
+                showAuthUI('You need to be signed in to access the Invoice Generator.', document.querySelector('.container'));
+            }
         });
-        
-        // Use a flag to prevent redirect loops
-        const authAttempted = sessionStorage.getItem('authAttempted');
-        
-        // If we're coming back from a sign-in attempt, don't redirect again
-        if (window.location.href.includes('?') || authAttempted === 'true') {
-            sessionStorage.setItem('authAttempted', 'true');
-        }
     </script>
     
     <!-- PDF Generation Library -->
@@ -223,103 +235,25 @@
     </div>
 
     <script>
-        // Initialize variables
-        let clerkFrontend;
-        let currentUser;
-        
         // Set today's date as default for invoice date
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('invoice-date').value = today;
-        
-        // Initialize Clerk with manual authentication approach
-        async function initializeClerk() {
-            // Show loading indicator
-            document.getElementById('loading-auth').style.display = 'flex';
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateField = document.getElementById('invoice-date');
+            if (dateField) dateField.value = today;
             
-            try {
-                // Start Clerk
-                window.Clerk = window.Clerk || {};
-                window.clerkAsyncInit = function() {
-                    Clerk.load({
-                        // Configure Clerk with your publishable key
-                        publishableKey: clerkPublishableKey,
-                        // Set allowed redirect URLs
-                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
-                    });
+            // Add a simple sign out button
+            const userButton = document.getElementById('user-button');
+            if (userButton) {
+                userButton.innerHTML = '';
+                const button = document.createElement('button');
+                button.className = 'auth-button';
+                button.textContent = 'Sign Out';
+                button.onclick = function() {
+                    window.location.href = 'https://accounts.mckinney.es/sign-in';
                 };
-                
-                // Wait for Clerk to load
-                if (!window.Clerk || !window.Clerk.isReady()) {
-                    await new Promise(resolve => {
-                        const interval = setInterval(() => {
-                            if (window.Clerk && window.Clerk.isReady()) {
-                                clearInterval(interval);
-                                resolve();
-                            }
-                        }, 100);
-                    });
-                }
-                
-                // IMPORTANT: NO AUTOMATIC REDIRECTS
-                // Check if user is signed in
-                if (!Clerk.user) {
-                    // User is not signed in, show sign-in UI
-                    document.getElementById('loading-auth').style.display = 'none';
-                    
-                    // Create auth prompt
-                    const authDiv = document.createElement('div');
-                    authDiv.className = 'auth-prompt';
-                    authDiv.style.textAlign = 'center';
-                    authDiv.style.padding = '2rem';
-                    authDiv.style.backgroundColor = '#fff';
-                    authDiv.style.borderRadius = '8px';
-                    authDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
-                    authDiv.style.margin = '100px auto';
-                    authDiv.style.maxWidth = '500px';
-                    
-                    authDiv.innerHTML = `
-                        <h2>Authentication Required</h2>
-                        <p>You need to be signed in to access the Invoice Generator.</p>
-                        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Sign In</a>
-                    `;
-                    
-                    // Insert before container
-                    document.body.insertBefore(authDiv, document.querySelector('.container'));
-                    return;
-                }
-                
-                // User is signed in
-                currentUser = Clerk.user;
-                
-                // Show the authenticated content
-                document.querySelector('.container').style.display = 'block';
-                document.getElementById('loading-auth').style.display = 'none';
-                
-                // Mount the UserButton with proper configuration
-                Clerk.mountUserButton(document.getElementById('user-button'), {
-                    afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
-                    appearance: {
-                        elements: {
-                            rootBox: {
-                                width: '110px',
-                                height: '40px'
-                            },
-                            avatarBox: {
-                                width: '32px',
-                                height: '32px'
-                            }
-                        }
-                    }
-                });
-                
-            } catch (error) {
-                console.error('Error initializing Clerk:', error);
-                // Redirect to sign-in instead of showing fallback
-                window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                    encodeURIComponent(window.location.href);
-                return;
+                userButton.appendChild(button);
             }
-        }
+        });
         
         // Handle form submission and PDF generation
         document.getElementById('invoice-form').addEventListener('submit', async function(e) {
