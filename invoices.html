@@ -48,15 +48,12 @@
             document.querySelector('.container').style.display = 'none';
         });
         
-        // Set the redirect URL in localStorage before redirecting to sign-in or sign-up
-        function setRedirectUrl() {
-            localStorage.setItem('redirectUrl', window.location.href);
-        }
+        // Use a flag to prevent redirect loops
+        const authAttempted = sessionStorage.getItem('authAttempted');
         
-        // Check if we're being redirected back from Clerk
-        if (window.location.href.includes('default-redirect')) {
-            const redirectUrl = localStorage.getItem('redirectUrl') || 'https://mckinney.es/invoices.html';
-            window.location.replace(redirectUrl);
+        // If we're coming back from a sign-in attempt, don't redirect again
+        if (window.location.href.includes('?') || authAttempted === 'true') {
+            sessionStorage.setItem('authAttempted', 'true');
         }
     </script>
     
@@ -463,11 +460,34 @@
                 
                 // Check if user is signed in
                 if (!Clerk.user) {
-                    // User is not signed in, redirect to sign-in
-                    // Use a fixed redirect URL to avoid loops
-                    window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                        encodeURIComponent('https://mckinney.es/invoices.html');
-                    return;
+                    // Only redirect if we haven't attempted auth already
+                    if (authAttempted !== 'true') {
+                        // Set the flag to prevent future redirects
+                        sessionStorage.setItem('authAttempted', 'true');
+                        // Redirect to sign-in
+                        window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                            encodeURIComponent('https://mckinney.es/invoices.html');
+                        return;
+                    } else {
+                        // Show a sign-in button instead of redirecting
+                        document.getElementById('loading-auth').style.display = 'none';
+                        const authDiv = document.createElement('div');
+                        authDiv.className = 'auth-prompt';
+                        authDiv.style.textAlign = 'center';
+                        authDiv.style.padding = '2rem';
+                        authDiv.innerHTML = `
+                            <h2>Authentication Required</h2>
+                            <p>You need to be signed in to access this page.</p>
+                            <button class="auth-button" style="margin-top: 1rem;">Sign In</button>
+                        `;
+                        document.body.insertBefore(authDiv, document.querySelector('.container'));
+                        authDiv.querySelector('button').addEventListener('click', function() {
+                            sessionStorage.removeItem('authAttempted');
+                            window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                                encodeURIComponent('https://mckinney.es/invoices.html');
+                        });
+                        return;
+                    }
                 }
                 
                 // User is signed in
