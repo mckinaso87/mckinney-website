@@ -1,11 +1,11 @@
-// Clerk Authentication Helper
+// Clerk Authentication Helper - Simplified Version
 // This file provides a consistent authentication approach across pages
 
 // Initialize Clerk with your publishable key
 const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
 
 /**
- * Initialize Clerk authentication with proper hydration handling to prevent redirect loops
+ * Initialize Clerk authentication with a simpler approach to prevent redirect loops
  * @param {string} contentElementId - ID of the content element to show after authentication
  * @param {string} loadingElementId - ID of the loading indicator element
  * @returns {Promise<boolean>} - Whether the user is authenticated
@@ -19,134 +19,68 @@ async function initializeClerk(contentElementId, loadingElementId) {
     const loadingElement = document.getElementById(loadingElementId);
     if (loadingElement) loadingElement.style.display = 'flex';
     
-    // Check if we're coming back from a sign-in redirect
-    const urlParams = new URLSearchParams(window.location.search);
-    const isRedirectBack = urlParams.has('__clerk_status') || urlParams.has('__clerk_error');
-    
     try {
-        // Initialize Clerk without any automatic redirects
+        // Initialize Clerk with minimal configuration
         window.Clerk = window.Clerk || {};
         window.clerkAsyncInit = function() {
             Clerk.load({
-                publishableKey: clerkPublishableKey,
-                // CRITICAL: No redirects configured here to prevent loops
-                allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                publishableKey: clerkPublishableKey
             });
         };
         
-        // Wait for Clerk to be fully loaded and hydrated
-        await waitForClerkHydration();
+        // Wait for Clerk to be fully loaded
+        await new Promise(resolve => {
+            if (window.Clerk && window.Clerk.isReady()) {
+                resolve();
+                return;
+            }
+            
+            const checkInterval = setInterval(() => {
+                if (window.Clerk && window.Clerk.isReady()) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
+            }, 100);
+            
+            // Set a timeout to avoid waiting forever
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                resolve();
+            }, 5000);
+        });
         
-        // Clean up URL if we're coming back from a redirect
-        if (isRedirectBack) {
-            // Remove Clerk query parameters to prevent redirect loops
-            const cleanUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, cleanUrl);
+        // Remove any query parameters to prevent loops
+        if (window.location.search) {
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
         
-        // Now check authentication state only after full hydration
-        return checkAuthState(contentElementId, loadingElementId);
-    } catch (error) {
-        console.error('Error initializing Clerk:', error);
+        // Check if user is authenticated
+        const isAuthenticated = window.Clerk && window.Clerk.user;
+        
+        if (isAuthenticated) {
+            // User is authenticated, show content
+            if (contentElement) contentElement.style.display = 'block';
+            
+            // Mount user button if it exists
+            const userButtonElement = document.getElementById('user-button');
+            if (userButtonElement) {
+                Clerk.mountUserButton(userButtonElement, {
+                    afterSignOutUrl: 'https://accounts.mckinney.es/sign-in'
+                });
+            }
+        }
+        
         // Hide loading indicator
         if (loadingElement) loadingElement.style.display = 'none';
-        return false;
-    }
-}
-
-/**
- * Wait for Clerk to be fully loaded and hydrated
- * This is critical to prevent redirect loops caused by checking auth state too early
- */
-async function waitForClerkHydration() {
-    return new Promise((resolve) => {
-        // If already loaded and ready, resolve immediately
-        if (window.Clerk && window.Clerk.isReady()) {
-            resolve();
-            return;
-        }
         
-        // Set a timeout to prevent infinite waiting
-        const timeout = setTimeout(() => {
-            console.warn('Clerk hydration timeout - continuing anyway');
-            resolve();
-        }, 5000);
+        return isAuthenticated;
+    } catch (error) {
+        console.error('Error initializing Clerk:', error);
         
-        // Check periodically for Clerk to be ready
-        const interval = setInterval(() => {
-            if (window.Clerk && window.Clerk.isReady()) {
-                clearInterval(interval);
-                clearTimeout(timeout);
-                resolve();
-            }
-        }, 100);
-    });
-}
-
-/**
- * Check authentication state after Clerk is fully hydrated
- * Only proceeds if Clerk is fully loaded to prevent premature auth checks
- */
-function checkAuthState(contentElementId, loadingElementId) {
-    const contentElement = document.getElementById(contentElementId);
-    const loadingElement = document.getElementById(loadingElementId);
-    
-    // Only proceed if Clerk is fully loaded
-    if (!window.Clerk || !window.Clerk.isReady()) {
-        if (loadingElement) loadingElement.style.display = 'none';
-        return false;
-    }
-    
-    // Check if we have a URL parameter from a redirect
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasRedirectParam = urlParams.has('__clerk_status') || urlParams.has('__clerk_error');
-    
-    // If we have redirect params, clean them up to prevent loops
-    if (hasRedirectParam) {
-        // Clean up the URL to prevent redirect loops
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-    }
-    
-    // Check if user is authenticated
-    if (Clerk.user) {
-        // User is authenticated, show content
-        if (contentElement) contentElement.style.display = 'block';
+        // Hide loading indicator
         if (loadingElement) loadingElement.style.display = 'none';
         
-        // Mount user button if it exists
-        mountUserButton();
-        return true;
-    } else {
-        // User is not authenticated
-        if (loadingElement) loadingElement.style.display = 'none';
         return false;
-    }
-}
-
-/**
- * Mount user button with proper styling
- * Only called after authentication is confirmed
- */
-function mountUserButton() {
-    const userButton = document.getElementById('user-button');
-    if (userButton && window.Clerk && window.Clerk.isReady()) {
-        userButton.innerHTML = '';
-        Clerk.mountUserButton(userButton, {
-            afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
-            appearance: {
-                elements: {
-                    rootBox: {
-                        width: '110px',
-                        height: '40px'
-                    },
-                    avatarBox: {
-                        width: '32px',
-                        height: '32px'
-                    }
-                }
-            }
-        });
     }
 }
 
@@ -166,14 +100,11 @@ function showAuthUI(message, container) {
     authDiv.style.margin = '100px auto';
     authDiv.style.maxWidth = '500px';
     
-    // Get the current page URL for redirect after sign-in
-    const currentUrl = encodeURIComponent(window.location.href);
-    const signInUrl = `https://accounts.mckinney.es/sign-in?redirect_url=${currentUrl}`;
-    
+    // Use a direct link to sign-in without redirect parameters
     authDiv.innerHTML = `
         <h2>Authentication Required</h2>
         <p>${message || 'You need to be signed in to access this content.'}</p>
-        <a href="${signInUrl}" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none; padding: 0.5rem 1rem; background-color: #007bff; color: white; border-radius: 4px;">Sign In</a>
+        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none; padding: 0.5rem 1rem; background-color: #007bff; color: white; border-radius: 4px;">Sign In</a>
     `;
     
     // Insert before container or append to body
@@ -202,24 +133,12 @@ style.textContent = `
         100% { transform: rotate(360deg); }
     }
     
-    .auth-button {
-        margin-top: 1rem;
-        display: inline-block;
-        text-decoration: none;
-        padding: 0.5rem 1rem;
-        background-color: #007bff;
-        color: white;
-        border-radius: 4px;
-    }
-    
-    .auth-prompt {
-        text-align: center;
+    .loading-auth {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         padding: 2rem;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        margin: 100px auto;
-        max-width: 500px;
+        flex-direction: column;
     }
 `;
 document.addEventListener('DOMContentLoaded', function() {

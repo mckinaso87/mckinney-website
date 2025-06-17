@@ -57,8 +57,24 @@
     <script src="clerk-auth.js"></script>
     
     <script>
-        // Immediately hide the content until authentication is confirmed
+        // Create loading indicator
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loading-auth';
+        loadingDiv.className = 'loading-auth';
+        loadingDiv.innerHTML = '<div class="spinner"></div><p>Loading authentication...</p>';
+        loadingDiv.style.display = 'none';
+        
         document.addEventListener('DOMContentLoaded', async function() {
+            // Add loading indicator to the page
+            document.body.prepend(loadingDiv);
+            
+            // Hide content initially
+            const invoiceContainer = document.getElementById('invoice-container');
+            if (invoiceContainer) invoiceContainer.style.display = 'none';
+            
+            // Show loading indicator
+            loadingDiv.style.display = 'flex';
+            
             // Initialize authentication
             const isAuthenticated = await initializeClerk('invoice-container', 'loading-auth');
             
