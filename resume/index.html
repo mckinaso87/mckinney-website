@@ -17,6 +17,146 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/resume.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Clerk SDK for authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+    
+    <style>
+        /* Auth button styles */
+        .user-auth {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+        
+        .auth-button {
+            background-color: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-family: 'Inter', sans-serif;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .auth-button:hover {
+            background-color: var(--chocolate-light);
+        }
+        
+        /* Fix for Clerk UserButton */
+        #user-button {
+            min-width: 110px;
+        }
+    </style>
+    
+    <script>
+        // Initialize Clerk with your publishable key
+        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
+        
+        // Set the redirect URL in localStorage before redirecting to sign-in or sign-up
+        function setRedirectUrl() {
+            localStorage.setItem('redirectUrl', window.location.href);
+        }
+        
+        // Check if we're being redirected back from Clerk
+        if (window.location.href.includes('default-redirect')) {
+            const redirectUrl = localStorage.getItem('redirectUrl') || 'https://mckinney.es/resume/index.html';
+            window.location.replace(redirectUrl);
+        }
+        
+        // Initialize Clerk when the page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Show loading indicator
+                const resumeContent = document.getElementById('resume-content');
+                if (resumeContent) {
+                    resumeContent.style.display = 'none';
+                }
+                
+                const loadingElement = document.createElement('div');
+                loadingElement.id = 'loading-auth';
+                loadingElement.className = 'loading';
+                loadingElement.style.display = 'flex';
+                loadingElement.innerHTML = '<div class="spinner"></div><p>Authenticating...</p>';
+                document.querySelector('main').prepend(loadingElement);
+                
+                // Start Clerk
+                window.Clerk = window.Clerk || {};
+                window.clerkAsyncInit = function() {
+                    Clerk.load({
+                        // Configure Clerk with your publishable key
+                        publishableKey: clerkPublishableKey,
+                        // Set allowed redirect URLs
+                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                    });
+                };
+                
+                // Wait for Clerk to load
+                if (!window.Clerk || !window.Clerk.isReady()) {
+                    await new Promise(resolve => {
+                        const interval = setInterval(() => {
+                            if (window.Clerk && window.Clerk.isReady()) {
+                                clearInterval(interval);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                }
+                
+                // Check if user is signed in
+                if (!Clerk.user) {
+                    // User is not signed in, redirect to sign-in
+                    setRedirectUrl(); // Save current URL for redirect back
+                    window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                        encodeURIComponent(window.location.href);
+                    return;
+                }
+                
+                // Mount the UserButton if the element exists
+                if (document.getElementById('user-button')) {
+                    Clerk.mountUserButton(document.getElementById('user-button'), {
+                        afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
+                        appearance: {
+                            elements: {
+                                rootBox: {
+                                    width: '110px',
+                                    height: '40px'
+                                },
+                                avatarBox: {
+                                    width: '32px',
+                                    height: '32px'
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Show the resume content
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                if (resumeContent) {
+                    resumeContent.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                
+                // Fallback to development mode
+                const loadingElement = document.getElementById('loading-auth');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
+                const resumeContent = document.getElementById('resume-content');
+                if (resumeContent) {
+                    resumeContent.style.display = 'block';
+                }
+            }
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -52,14 +192,18 @@
                     <li><a href="https://cal.com/mckinney" class="nav-cta">Schedule a Call</a></li>
                 </ul>
             </div>
+            <div class="user-auth">
+                <div id="user-button"></div>
+            </div>
         </nav>
     </header>
 
     <main class="resume-container">
-        <div class="resume-header">
-            <h1>David McKinney</h1>
-            <p class="title">TECHNICAL LEADER DRIVING NETWORK SECURITY, BUSINESS GROWTH & COLLABORATIVE TEAM SUCCESS | FORMER ORACLE LEADER | ADVOCATE FOR COMMUNITY DEVELOPMENT</p>
-            <div class="contact-info">
+        <div id="resume-content">
+            <div class="resume-header">
+                <h1>David McKinney</h1>
+                <p class="title">TECHNICAL LEADER DRIVING NETWORK SECURITY, BUSINESS GROWTH & COLLABORATIVE TEAM SUCCESS | FORMER ORACLE LEADER | ADVOCATE FOR COMMUNITY DEVELOPMENT</p>
+                <div class="contact-info">
                 <div class="contact-item">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
@@ -576,6 +720,7 @@
                 Download Resume PDF
             </a>
         </div>
+    </div><!-- End of resume-content -->
 
         <footer>
             <div class="footer-content">

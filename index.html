@@ -32,6 +32,100 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Clerk SDK for authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+    
+    <style>
+        /* Auth button styles */
+        .user-auth {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+        
+        .auth-button {
+            background-color: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-family: 'Inter', sans-serif;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .auth-button:hover {
+            background-color: var(--chocolate-light);
+        }
+    </style>
+    
+    <script>
+        // Initialize Clerk with your publishable key
+        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
+        
+        // Initialize Clerk when the page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Start Clerk
+                window.Clerk = window.Clerk || {};
+                window.clerkAsyncInit = function() {
+                    Clerk.load({
+                        // Configure Clerk with your publishable key
+                        publishableKey: clerkPublishableKey,
+                        // Set allowed redirect URLs
+                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                    });
+                };
+                
+                // Wait for Clerk to load
+                if (!window.Clerk || !window.Clerk.isReady()) {
+                    await new Promise(resolve => {
+                        const interval = setInterval(() => {
+                            if (window.Clerk && window.Clerk.isReady()) {
+                                clearInterval(interval);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                }
+                
+                // Mount the UserButton if the element exists
+                if (document.getElementById('user-button')) {
+                    // If user is not signed in, show a sign-in button instead
+                    if (!Clerk.user) {
+                        const signInButton = document.createElement('button');
+                        signInButton.className = 'auth-button';
+                        signInButton.textContent = 'Sign In';
+                        signInButton.onclick = function() {
+                            window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                                encodeURIComponent(window.location.origin + '/invoices.html');
+                        };
+                        document.getElementById('user-button').appendChild(signInButton);
+                    } else {
+                        // User is signed in, mount the UserButton
+                        Clerk.mountUserButton(document.getElementById('user-button'), {
+                            afterSignInUrl: '/invoices.html',
+                            afterSignUpUrl: '/invoices.html',
+                            afterSignOutUrl: 'https://accounts.mckinney.es/sign-in'
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                // Create a fallback sign-in button
+                const signInButton = document.createElement('button');
+                signInButton.className = 'auth-button';
+                signInButton.textContent = 'Sign In';
+                signInButton.onclick = function() {
+                    window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                        encodeURIComponent(window.location.origin + '/invoices.html');
+                };
+                document.getElementById('user-button').appendChild(signInButton);
+            }
+        });
+    </script>
 </head>
 <body>
     <header>
@@ -65,7 +159,11 @@
                         </ul>
                     </li>
                     <li><a href="https://cal.com/mckinney" class="nav-cta">Schedule a Call</a></li>
+                    <li><a href="invoices.html" class="client-portal">Client Portal</a></li>
                 </ul>
+            </div>
+            <div class="user-auth">
+                <div id="user-button"></div>
             </div>
         </nav>
     </header>
