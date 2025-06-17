@@ -31,6 +31,11 @@
         // Initialize Clerk with your publishable key
         const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
         
+        // Immediately hide the content until authentication is confirmed
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('.container').style.display = 'none';
+        });
+        
         // Set the redirect URL in localStorage before redirecting to sign-in or sign-up
         function setRedirectUrl() {
             localStorage.setItem('redirectUrl', window.location.href);
@@ -338,13 +343,14 @@
         </nav>
     </header>
 
-    <div class="container">
-        <div id="loading-auth" class="loading" style="display: flex;">
-            <div class="spinner"></div>
-            <p>Authenticating...</p>
-        </div>
+    <div id="loading-auth" class="loading" style="display: flex;">
+        <div class="spinner"></div>
+        <p>Loading authentication...</p>
+    </div>
+    
+    <div class="container" style="display: none;">
         
-        <div id="auth-content" class="hidden">
+        <div id="auth-content">
             <h1>Invoice Generator</h1>
             
             <div class="card">
@@ -417,6 +423,8 @@
         
         // Initialize Clerk with proper authentication
         async function initializeClerk() {
+            // Show loading indicator
+            document.getElementById('loading-auth').style.display = 'flex';
             try {
                 // Start Clerk
                 window.Clerk = window.Clerk || {};
@@ -453,6 +461,10 @@
                 // User is signed in
                 currentUser = Clerk.user;
                 
+                // Show the authenticated content
+                document.querySelector('.container').style.display = 'block';
+                document.getElementById('loading-auth').style.display = 'none';
+                
                 // Mount the UserButton with proper configuration
                 Clerk.mountUserButton(document.getElementById('user-button'), {
                     afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
@@ -470,34 +482,12 @@
                     }
                 });
                 
-                // Show the authenticated content
-                document.getElementById('loading-auth').style.display = 'none';
-                document.getElementById('auth-content').classList.remove('hidden');
-                
             } catch (error) {
-                console.error('Authentication error:', error);
-                
-                // Fallback to development mode if Clerk fails
-                console.log('Falling back to development mode');
-                
-                // For development - show placeholder user info
-                const userInfo = document.getElementById('user-info');
-                const userName = document.createElement('span');
-                userName.textContent = 'Development User';
-                userInfo.prepend(userName);
-                
-                // Add a simple sign out button
-                const signOutBtn = document.createElement('button');
-                signOutBtn.textContent = 'Sign Out';
-                signOutBtn.className = 'logout-btn';
-                signOutBtn.addEventListener('click', () => {
-                    window.location.href = 'https://robust-alpaca-99.accounts.dev/sign-in';
-                });
-                userInfo.appendChild(signOutBtn);
-                
-                // Show the authenticated content
-                document.getElementById('loading-auth').style.display = 'none';
-                document.getElementById('auth-content').classList.remove('hidden');
+                console.error('Error initializing Clerk:', error);
+                // Redirect to sign-in instead of showing fallback
+                window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
+                    encodeURIComponent(window.location.href);
+                return;
             }
         }
         

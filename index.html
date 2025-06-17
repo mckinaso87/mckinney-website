@@ -93,6 +93,9 @@
                 
                 // Mount the UserButton if the element exists
                 if (document.getElementById('user-button')) {
+                    // Clear any existing content
+                    document.getElementById('user-button').innerHTML = '';
+                    
                     // If user is not signed in, show a sign-in button instead
                     if (!Clerk.user) {
                         const signInButton = document.createElement('button');
@@ -100,7 +103,7 @@
                         signInButton.textContent = 'Sign In';
                         signInButton.onclick = function() {
                             window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                                encodeURIComponent(window.location.origin + '/invoices.html');
+                                encodeURIComponent(window.location.href);
                         };
                         document.getElementById('user-button').appendChild(signInButton);
                     } else {
