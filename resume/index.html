@@ -123,9 +123,9 @@
                 // Check if user is signed in
                 if (!Clerk.user) {
                     // User is not signed in, redirect to sign-in
-                    setRedirectUrl(); // Save current URL for redirect back
+                    // Use a fixed redirect URL to avoid loops
                     window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                        encodeURIComponent(window.location.href);
+                        encodeURIComponent('https://mckinney.es/resume/index.html');
                     return;
                 }
                 

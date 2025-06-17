@@ -117,7 +117,7 @@
                         signInButton.textContent = 'Sign In';
                         signInButton.onclick = function() {
                             window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                                encodeURIComponent(window.location.href);
+                                encodeURIComponent('https://mckinney.es/invoices.html');
                         };
                         document.getElementById('user-button').appendChild(signInButton);
                     } else {
@@ -137,7 +137,7 @@
                 signInButton.textContent = 'Sign In';
                 signInButton.onclick = function() {
                     window.location.href = 'https://accounts.mckinney.es/sign-in?redirect_url=' + 
-                        encodeURIComponent(window.location.origin + '/invoices.html');
+                        encodeURIComponent('https://mckinney.es/invoices.html');
                 };
                 document.getElementById('user-button').appendChild(signInButton);
             }
