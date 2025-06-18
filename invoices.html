@@ -435,6 +435,24 @@
                         </div>
                     </div>
                     
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="discount">Discount (%)</label>
+                            <input type="number" id="discount" min="0" max="100" step="1" value="0" placeholder="Enter discount percentage">
+                        </div>
+                        <div class="form-group">
+                            <label for="discounted-amount">Discounted Amount</label>
+                            <input type="text" id="discounted-amount" readonly disabled>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="payment-link">Payment Link URL (optional)</label>
+                            <input type="url" id="payment-link" placeholder="https://example.com/pay">
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
                         <label for="notes">Additional Notes (optional)</label>
                         <textarea id="notes" rows="3"></textarea>
@@ -469,6 +487,42 @@
                 };
                 userButton.appendChild(button);
             }
+            
+            // Set up discount calculation
+            const amountField = document.getElementById('amount');
+            const discountField = document.getElementById('discount');
+            const discountedAmountField = document.getElementById('discounted-amount');
+            
+            // Function to calculate and display discounted amount
+            function calculateDiscount() {
+                if (amountField.value && discountField.value) {
+                    const amount = parseFloat(amountField.value);
+                    const discount = parseFloat(discountField.value);
+                    
+                    if (!isNaN(amount) && !isNaN(discount)) {
+                        const discountAmount = amount * (discount / 100);
+                        const discountedAmount = amount - discountAmount;
+                        
+                        // Format the discounted amount with the selected currency
+                        const currency = document.getElementById('currency').value;
+                        const formatter = new Intl.NumberFormat('en-US', {
+                            style: 'currency',
+                            currency: currency
+                        });
+                        
+                        discountedAmountField.value = formatter.format(discountedAmount);
+                    }
+                } else {
+                    discountedAmountField.value = '';
+                }
+            }
+            
+            // Add event listeners for real-time calculation
+            if (amountField && discountField && discountedAmountField) {
+                amountField.addEventListener('input', calculateDiscount);
+                discountField.addEventListener('input', calculateDiscount);
+                document.getElementById('currency').addEventListener('change', calculateDiscount);
+            }
         });
         
         // Handle form submission and PDF generation
@@ -487,6 +541,8 @@
                 const dueDate = document.getElementById('due-date').value;
                 const currency = document.getElementById('currency').value;
                 const amount = document.getElementById('amount').value;
+                const discount = document.getElementById('discount').value || '0';
+                const paymentLink = document.getElementById('payment-link').value;
                 const notes = document.getElementById('notes').value;
                 
                 // Generate invoice number (timestamp + random string)
@@ -515,6 +571,18 @@
                 });
                 const formattedAmount = formatter.format(amount);
                 
+                // Calculate discount if applicable
+                let discountAmount = 0;
+                let discountedTotal = parseFloat(amount);
+                let formattedDiscountedTotal = formattedAmount;
+                
+                if (discount && parseFloat(discount) > 0) {
+                    const discountPercent = parseFloat(discount);
+                    discountAmount = parseFloat(amount) * (discountPercent / 100);
+                    discountedTotal = parseFloat(amount) - discountAmount;
+                    formattedDiscountedTotal = formatter.format(discountedTotal);
+                }
+                
                 // Generate PDF
                 await generatePDF({
                     clientName,
@@ -524,6 +592,10 @@
                     dueDate: formattedDueDate,
                     currency,
                     amount: formattedAmount,
+                    discount: parseFloat(discount),
+                    discountAmount: formatter.format(discountAmount),
+                    discountedTotal: formattedDiscountedTotal,
+                    paymentLink,
                     notes,
                     invoiceNumber
                 });
@@ -680,23 +752,78 @@
             // Calculate the Y position after the table
             const finalY = doc.lastAutoTable.finalY + 10;
             
-            // Total amount
-            doc.setFontSize(12);
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(...chocolateColor); // Chocolate color
-            doc.text('Total:', 140, finalY);
-            doc.text(data.amount, 170, finalY);
+            // Show discount information if applicable
+            let currentY = finalY;
+            
+            if (data.discount && data.discount > 0) {
+                // Subtotal
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...charcoalColor);
+                doc.text('Subtotal:', 140, currentY);
+                doc.text(data.amount, 170, currentY);
+                currentY += 6;
+                
+                // Discount
+                doc.text(`Discount (${data.discount}%):`, 140, currentY);
+                doc.text(`-${data.discountAmount}`, 170, currentY);
+                currentY += 8;
+                
+                // Total after discount
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...chocolateColor); // Chocolate color
+                doc.text('Total:', 140, currentY);
+                doc.text(data.discountedTotal, 170, currentY);
+            } else {
+                // Total amount (no discount)
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...chocolateColor); // Chocolate color
+                doc.text('Total:', 140, currentY);
+                doc.text(data.amount, 170, currentY);
+            }
+            
+            // Payment Link
+            let notesY = finalY + 10;
+            
+            if (data.paymentLink) {
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...chocolateColor); // Chocolate color
+                doc.text('Payment Link:', 20, notesY);
+                
+                // Add clickable payment link
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(0, 119, 181); // Blue color for link
+                doc.setDrawColor(0, 119, 181); // Blue underline
+                
+                // Format the URL for display (truncate if too long)
+                let displayUrl = data.paymentLink;
+                if (displayUrl.length > 60) {
+                    displayUrl = displayUrl.substring(0, 57) + '...';
+                }
+                
+                // Add the link text
+                doc.textWithLink('Pay Online', 20, notesY + 5, { url: data.paymentLink });
+                
+                // Add underline
+                const textWidth = doc.getTextWidth('Pay Online');
+                doc.line(20, notesY + 6, 20 + textWidth, notesY + 6);
+                
+                notesY += 15; // Increase Y position for notes if present
+            }
             
             // Notes
             if (data.notes) {
                 doc.setFontSize(10);
                 doc.setFont('helvetica', 'normal');
                 doc.setTextColor(...charcoalColor); // Charcoal color
-                doc.text('Notes:', 20, finalY + 10);
+                doc.text('Notes:', 20, notesY);
                 
                 // Handle multi-line notes with word wrapping
                 const splitNotes = doc.splitTextToSize(data.notes, 170);
-                doc.text(splitNotes, 20, finalY + 15);
+                doc.text(splitNotes, 20, notesY + 5);
             }
             
             // Try to load the signature image
