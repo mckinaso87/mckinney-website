@@ -69,7 +69,8 @@ const translations = {
     "Custom API Integrations": "Integraciones API Personalizadas",
     
     // Why choose section
-    "Why Choose Our Website Development?": "¿Por Qué Elegir Nuestro Desarrollo Web?",
+    "Why Choose Our Website Development?": "¿Por Qué Elegir Nuestro Desarrollo de Sitios Web?",
+    "Why Choose Our Desarrollo Web?": "¿Por Qué Elegir Nuestro Desarrollo de Sitios Web?",
     "No Ongoing Maintenance": "Sin Mantenimiento Continuo",
     "Our websites are built to be low-maintenance. We focus on creating reliable solutions that don't require constant updates.": 
     "Nuestros sitios web están construidos para requerir poco mantenimiento. Nos enfocamos en crear soluciones confiables que no requieren actualizaciones constantes.",
@@ -105,6 +106,13 @@ function translatePage(targetLanguage) {
     const translateButton = document.getElementById('translate-button');
     if (translateButton) {
         translateButton.textContent = targetLanguage === 'en' ? 'Español' : 'English';
+    }
+    
+    // Handle specific elements by ID
+    const whyChooseHeading = document.getElementById('why-choose-heading');
+    if (whyChooseHeading && targetLanguage === 'es') {
+        whyChooseHeading.setAttribute('data-original-text', whyChooseHeading.textContent);
+        whyChooseHeading.textContent = '¿Por Qué Elegir Nuestro Desarrollo de Sitios Web?';
     }
     
     // If switching to English, restore original content
