@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Generator | David McKinney</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Auth button styles */
+        .auth-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .auth-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .auth-prompt {
+            text-align: center;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin: 100px auto;
+            max-width: 500px;
+        }
+        
+        #loading-auth {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 2000;
+        }
+    </style>
+    
+    <!-- Clerk SDK for authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+    
+    <script>
+        // Initialize Clerk with your publishable key
+        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
+        
+        // Immediately hide the content until authentication is confirmed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide the main container initially
+            const container = document.querySelector('.container');
+            if (container) container.style.display = 'none';
+            
+            // Show loading indicator
+            const loadingElement = document.getElementById('loading-auth');
+            if (loadingElement) loadingElement.style.display = 'flex';
+            
+            // Initialize Clerk properly with a clean approach
+            initializeClerk();
+        });
+        
+        // Initialize Clerk with proper hydration handling
+        async function initializeClerk() {
+            try {
+                // Initialize Clerk
+                window.Clerk = window.Clerk || {};
+                window.clerkAsyncInit = function() {
+                    Clerk.load({
+                        publishableKey: clerkPublishableKey,
+                        // IMPORTANT: No redirects configured here
+                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                    });
+                };
+                
+                // Wait for Clerk to be fully loaded and hydrated
+                await waitForClerkHydration();
+                
+                // Now check authentication state
+                checkAuthState();
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                // Show manual sign-in UI instead of redirecting
+                showAuthUI();
+            }
+        }
+        
+        // Wait for Clerk to be fully loaded and hydrated
+        async function waitForClerkHydration() {
+            return new Promise((resolve) => {
+                if (window.Clerk && window.Clerk.isReady()) {
+                    resolve();
+                    return;
+                }
+                
+                // Set a timeout to prevent infinite waiting
+                const timeout = setTimeout(() => {
+                    console.warn('Clerk hydration timeout');
+                    resolve();
+                }, 5000);
+                
+                // Check periodically
+                const interval = setInterval(() => {
+                    if (window.Clerk && window.Clerk.isReady()) {
+                        clearInterval(interval);
+                        clearTimeout(timeout);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+        
+        // Check authentication state after Clerk is fully hydrated
+        function checkAuthState() {
+            const loadingElement = document.getElementById('loading-auth');
+            const container = document.querySelector('.container');
+            
+            // Only proceed if Clerk is fully loaded
+            if (!window.Clerk || !window.Clerk.isReady()) {
+                if (loadingElement) loadingElement.style.display = 'none';
+                showAuthUI();
+                return;
+            }
+            
+            // Check if user is authenticated
+            if (Clerk.user) {
+                // User is authenticated, show content
+                if (container) container.style.display = 'block';
+                if (loadingElement) loadingElement.style.display = 'none';
+                
+                // Mount user button
+                mountUserButton();
+            } else {
+                // User is not authenticated, show sign-in UI
+                if (loadingElement) loadingElement.style.display = 'none';
+                showAuthUI();
+            }
+        }
+        
+        // Mount user button
+        function mountUserButton() {
+            const userButton = document.getElementById('user-button');
+            if (userButton && window.Clerk && window.Clerk.isReady()) {
+                userButton.innerHTML = '';
+                Clerk.mountUserButton(userButton, {
+                    afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
+                    appearance: {
+                        elements: {
+                            rootBox: {
+                                width: '110px',
+                                height: '40px'
+                            },
+                            avatarBox: {
+                                width: '32px',
+                                height: '32px'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Show authentication UI
+        function showAuthUI() {
+            // Create auth prompt
+            const authDiv = document.createElement('div');
+            authDiv.className = 'auth-prompt';
+            
+            authDiv.innerHTML = `
+                <h2>Authentication Required</h2>
+                <p>You need to be signed in to access the Invoice Generator.</p>
+                <a href="https://accounts.mckinney.es/sign-in" class="auth-button">Sign In</a>
+            `;
+            
+            // Insert before container or append to body
+            const container = document.querySelector('.container');
+            if (container) {
+                document.body.insertBefore(authDiv, container);
+            } else {
+                document.body.appendChild(authDiv);
+            }
+        }
+    </script>
+    
+    <!-- PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- UUID Library for Invoice Numbers - with fallback -->
+    <script src="https://cdn.jsdelivr.net/npm/uuid@9.0.0/dist/umd/uuid.min.js"></script>
+    <script>
+        // Fallback for UUID if the library fails to load
+        if (typeof uuid === 'undefined') {
+            window.uuid = {
+                v4: function() {
+                    return 'xxxx-xxxx-xxxx-xxxx'.replace(/[x]/g, function() {
+                        return Math.floor(Math.random() * 16).toString(16);
+                    });
+                }
+            };
+        }
+    </script>
+    
+    <style>
+        :root {
+            /* Core colors from mckinney.es */
+            --charcoal-dark: #2B2B2B;
+            --charcoal: #333333;
+            --charcoal-light: #404040;
+            --chocolate: #6B4423;
+            --chocolate-light: #8B5E34;
+            --cream: #F5E6D3;
+            --bone-white: #F8F6F1;
+            --accent-warm: #D7CCC8;
+            --accent-blue: #0077B5;
+            --text-light: #FFFFFF;
+            --text-muted: #B0BEC5;
+            
+            /* Background colors */
+            --bg-primary: #F4F6F8;
+            --bg-secondary: #E8ECF0;
+            
+            /* Transparency and UI colors */
+            --header-bg: rgba(43, 43, 43, 0.95);
+            --card-bg: rgba(51, 51, 51, 0.97);
+            --card-hover: rgba(64, 64, 64, 0.98);
+            
+            /* Form-specific colors */
+            --primary-color: var(--chocolate);
+            --primary-hover: var(--chocolate-light);
+            --secondary-color: var(--charcoal-light);
+            --light-bg: var(--bg-primary);
+            --border-color: #e2e8f0;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            
+            /* Measurements */
+            border: 1px solid #d1fae5;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="assets/images/signature-logo.png" alt="David McKinney's Signature Logo">
+                </a>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#services">Services</a></li>
+                    <li><a href="blog/index.html">Blog</a></li>
+                </ul>
+            </div>
+            <div class="user-info" id="user-info">
+                <!-- Clerk UserButton will be mounted here -->
+                <div id="user-button"></div>
+            </div>
+        </nav>
+    </header>
+
+    <div id="loading-auth" class="loading" style="display: flex;">
+        <div class="spinner"></div>
+        <p>Loading authentication...</p>
+    </div>
+    
+    <div class="container" style="display: none;">
+        
+        <div id="auth-content">
+            <h1>Invoice Generator</h1>
+            
+            <div class="card">
+                <form id="invoice-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="client-name">Client Name*</label>
+                            <input type="text" id="client-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client-email">Client Email (optional)</label>
+                            <input type="email" id="client-email">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service-description">Description of Services*</label>
+                        <textarea id="service-description" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="invoice-date">Invoice Date*</label>
+                            <input type="date" id="invoice-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="due-date">Due Date*</label>
+                            <input type="date" id="due-date" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="currency">Currency*</label>
+                            <select id="currency" required>
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="CRC">CRC - Costa Rican Colón</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount*</label>
+                            <input type="number" id="amount" min="0" step="0.01" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="notes">Additional Notes (optional)</label>
+                        <textarea id="notes" rows="3"></textarea>
+                    </div>
+                    
+                    <button type="submit" id="generate-btn">Generate PDF</button>
+                    
+                    <div id="loading-pdf" class="loading">
+                        <div class="spinner"></div>
+                        <p>Generating PDF...</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default for invoice date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            const dateField = document.getElementById('invoice-date');
+            if (dateField) dateField.value = today;
+            
+            // Add a simple sign out button
+            const userButton = document.getElementById('user-button');
+            if (userButton) {
+                userButton.innerHTML = '';
+                const button = document.createElement('button');
+                button.className = 'auth-button';
+                button.textContent = 'Sign Out';
+                button.onclick = function() {
+                    window.location.href = 'https://accounts.mckinney.es/sign-in';
+                };
+                userButton.appendChild(button);
+            }
+        });
+        
+        // Handle form submission and PDF generation
+        document.getElementById('invoice-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const loadingPdf = document.getElementById('loading-pdf');
+            loadingPdf.style.display = 'flex';
+            
+            try {
+                // Get form values
+                const clientName = document.getElementById('client-name').value;
+                const clientEmail = document.getElementById('client-email').value;
+                const serviceDescription = document.getElementById('service-description').value;
+                const invoiceDate = document.getElementById('invoice-date').value;
+                const dueDate = document.getElementById('due-date').value;
+                const currency = document.getElementById('currency').value;
+                const amount = document.getElementById('amount').value;
+                const notes = document.getElementById('notes').value;
+                
+                // Generate invoice number (timestamp + random string)
+                // Use a try-catch to handle potential UUID issues
+                let invoiceNumber;
+                try {
+                    invoiceNumber = `INV-${Date.now().toString().slice(-6)}-${uuid.v4().slice(0, 4)}`;
+                } catch (error) {
+                    // Fallback if uuid fails
+                    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+                    invoiceNumber = `INV-${Date.now().toString().slice(-6)}-${randomPart}`;
+                }
+                
+                // Format dates for display
+                const formattedInvoiceDate = new Date(invoiceDate).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const formattedDueDate = new Date(dueDate).toLocaleDateString('en-US', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
+                
+                // Format currency and amount
+                const formatter = new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency
+                });
+                const formattedAmount = formatter.format(amount);
+                
+                // Generate PDF
+                await generatePDF({
+                    clientName,
+                    clientEmail,
+                    serviceDescription,
+                    invoiceDate: formattedInvoiceDate,
+                    dueDate: formattedDueDate,
+                    currency,
+                    amount: formattedAmount,
+                    notes,
+                    invoiceNumber
+                });
+                
+                // Save to Supabase (commented out - for future implementation)
+                // await saveInvoiceToSupabase({
+                //     client_name: clientName,
+                //     email: clientEmail,
+                //     service_description: serviceDescription,
+                //     invoice_date: invoiceDate,
+                //     due_date: dueDate,
+                //     currency,
+                //     amount: parseFloat(amount),
+                //     notes,
+                //     invoice_number: invoiceNumber
+                // });
+                
+            } catch (error) {
+                console.error('Error generating invoice:', error);
+                alert('Error generating invoice. Please try again.');
+            } finally {
+                loadingPdf.style.display = 'none';
+            }
+        });
+        
+        // Generate PDF function
+        async function generatePDF(data) {
+            // Create a new jsPDF instance
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Set font
+            doc.setFont('helvetica');
+            
+            // Define colors to match mckinney.es
+            const chocolateColor = [107, 68, 35]; // --chocolate: #6B4423
+            const charcoalColor = [43, 43, 43];  // --charcoal-dark: #2B2B2B
+            const textMutedColor = [176, 190, 197]; // --text-muted: #B0BEC5
+            
+            // Load company logo at the top
+            const logoImg = new Image();
+            logoImg.src = window.location.origin + '/assets/images/signature-logo.png';
+            
+            // Function to continue PDF generation after logo is loaded or on error
+            const continueWithPdfGeneration = function() {
+                // Company details
+                doc.setFontSize(10);
+                doc.setTextColor(...charcoalColor); // Charcoal color
+                doc.text('10560 SW Waterway Ln', 20, 30);
+                doc.text('Port Saint Lucie, FL 34987', 20, 35);
+                doc.text('lead@mckinney.es', 20, 40);
+                
+                // Add website URL below logo
+                doc.setFontSize(8);
+                doc.setTextColor(...chocolateColor); // Chocolate color
+                doc.text('mckinney.es', 20, 45);
+            };
+            
+            // Try to add the logo with proper contrast
+            try {
+                logoImg.onload = function() {
+                    // Create a background rectangle for contrast since the logo is white
+                    doc.setFillColor(...chocolateColor); // Chocolate color background
+                    doc.rect(15, 10, 70, 15, 'F'); // Rectangle for logo background
+                    
+                    // Add the logo image on top of the background
+                    doc.addImage(logoImg, 'PNG', 20, 10, 60, 15);
+                    
+                    continueWithPdfGeneration();
+                };
+                
+                logoImg.onerror = function() {
+                    console.warn('Could not load logo image, using text instead');
+                    // Fallback to text if image fails to load
+                    doc.setFontSize(24);
+                    doc.setTextColor(...chocolateColor);
+                    doc.text('mcKinney.es', 20, 20);
+                    
+                    continueWithPdfGeneration();
+                };
+                
+                // Set a timeout in case the image loading hangs
+                setTimeout(function() {
+                    if (!logoImg.complete) {
+                        logoImg.onerror();
+                    }
+                }, 1500);
+            } catch (error) {
+                console.warn('Error with logo:', error);
+                // Fallback to text
+                doc.setFontSize(24);
+                doc.setTextColor(...chocolateColor);
+                doc.text('mcKinney.es', 20, 20);
+                
+                continueWithPdfGeneration();
+            }
+            
+            // Invoice title and number
+            doc.setFontSize(16);
+            doc.setTextColor(...chocolateColor); // Chocolate color
+            doc.text('INVOICE', 140, 20);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(...charcoalColor); // Charcoal color
+            doc.text(`Invoice Number: ${data.invoiceNumber}`, 140, 30);
+            doc.text(`Invoice Date: ${data.invoiceDate}`, 140, 35);
+            doc.text(`Due Date: ${data.dueDate}`, 140, 40);
+            
+            // Client information
+            doc.setFontSize(12);
+            doc.setTextColor(...chocolateColor); // Chocolate color
+            doc.text('Bill To:', 20, 60);
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...charcoalColor); // Charcoal color
+            doc.text(data.clientName, 20, 65);
+            if (data.clientEmail) {
+                doc.text(data.clientEmail, 20, 70);
+            }
+            
+            // Service description
+            doc.setFontSize(12);
+            doc.setTextColor(...chocolateColor); // Chocolate color
+            doc.text('Services:', 20, 85);
+            
+            // Create a table for services
+            const tableColumn = ['Description', 'Amount'];
+            const tableRows = [[data.serviceDescription, data.amount]];
+            
+            doc.autoTable({
+                head: [tableColumn],
+                body: tableRows,
+                startY: 90,
+                theme: 'grid',
+                styles: {
+                    fontSize: 10,
+                    cellPadding: 6,
+                    lineColor: [226, 232, 240]
+                },
+                headStyles: {
+                    fillColor: chocolateColor,
+                    textColor: [255, 255, 255], // White text
+                    fontStyle: 'bold'
+                },
+                alternateRowStyles: {
+                    fillColor: [244, 246, 248] // Light background for alternate rows
+                }
+            });
+            
+            // Calculate the Y position after the table
+            const finalY = doc.lastAutoTable.finalY + 10;
+            
+            // Total amount
+            doc.setFontSize(12);
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...chocolateColor); // Chocolate color
+            doc.text('Total:', 140, finalY);
+            doc.text(data.amount, 170, finalY);
+            
+            // Notes
+            if (data.notes) {
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...charcoalColor); // Charcoal color
+                doc.text('Notes:', 20, finalY + 10);
+                
+                // Handle multi-line notes with word wrapping
+                const splitNotes = doc.splitTextToSize(data.notes, 170);
+                doc.text(splitNotes, 20, finalY + 15);
+            }
+            
+            // Try to load the signature image
+            try {
+                const img = new Image();
+                // Use absolute URL to ensure the image loads correctly
+                img.src = window.location.origin + '/assets/images/signature-logo.png';
+                
+                img.onload = function() {
+                    // Create a more structured footer section
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const footerStartY = finalY + 40;
+                    
+                    // Create a footer box with light background
+                    doc.setFillColor(244, 246, 248); // Light background
+                    doc.setDrawColor(...chocolateColor); // Chocolate color border
+                    doc.setLineWidth(0.5);
+                    doc.roundedRect(20, footerStartY, pageWidth - 40, 50, 3, 3, 'FD'); // Filled rectangle with border
+                    
+                    // Add signature image on the left side
+                    doc.addImage(img, 'PNG', 30, footerStartY + 10, 50, 20);
+                    
+                    // Add signature label under the signature
+                    doc.setFontSize(8);
+                    doc.setTextColor(...charcoalColor);
+                    doc.text('David McKinney, Digital Signature', 30, footerStartY + 35);
+                    
+                    // Add a vertical separator line
+                    doc.setDrawColor(...chocolateColor);
+                    doc.setLineWidth(0.5);
+                    doc.line(pageWidth/2 - 10, footerStartY + 10, pageWidth/2 - 10, footerStartY + 40);
+                    
+                    // Thank you message on the right side
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'italic');
+                    doc.setTextColor(...chocolateColor);
+                    doc.text('Thank you for your business', pageWidth/2 + 30, footerStartY + 20, {
+                        align: 'center'
+                    });
+                    
+                    // Website URL below thank you message
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(...charcoalColor);
+                    doc.text('mckinney.es', pageWidth/2 + 30, footerStartY + 30, {
+                        align: 'center'
+                    });
+                    
+                    // Save the PDF
+                    doc.save(`Invoice-${data.invoiceNumber}.pdf`);
+                };
+                
+                img.onerror = function() {
+                    console.warn('Could not load signature image, continuing without it');
+                    
+                    // Create a footer box even without signature
+                    const pageWidth = doc.internal.pageSize.getWidth();
+                    const footerStartY = finalY + 40;
+                    
+                    // Create a footer box with light background
+                    doc.setFillColor(244, 246, 248); // Light background
+                    doc.setDrawColor(...chocolateColor); // Chocolate color border
+                    doc.setLineWidth(0.5);
+                    doc.roundedRect(20, footerStartY, pageWidth - 40, 40, 3, 3, 'FD'); // Filled rectangle with border
+                    
+                    // Thank you message centered
+                    doc.setFontSize(11);
+                    doc.setFont('helvetica', 'italic');
+                    doc.setTextColor(...chocolateColor);
+                    doc.text('Thank you for your business', pageWidth/2, footerStartY + 15, {
+                        align: 'center'
+                    });
+                    
+                    // Website URL below thank you message
+                    doc.setFontSize(9);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(...charcoalColor);
+                    doc.text('mckinney.es', pageWidth/2, footerStartY + 25, {
+                        align: 'center'
+                    });
+                    
+                    // Save the PDF
+                    doc.save(`Invoice-${data.invoiceNumber}.pdf`);
+                };
+            } catch (error) {
+                console.warn('Error loading signature:', error);
+                
+                // Create a footer box even without signature
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const footerStartY = finalY + 40;
+                
+                // Create a footer box with light background
+                doc.setFillColor(244, 246, 248); // Light background
+                doc.setDrawColor(...chocolateColor); // Chocolate color border
+                doc.setLineWidth(0.5);
+                doc.roundedRect(20, footerStartY, pageWidth - 40, 40, 3, 3, 'FD'); // Filled rectangle with border
+                
+                // Thank you message centered
+                doc.setFontSize(11);
+                doc.setFont('helvetica', 'italic');
+                doc.setTextColor(...chocolateColor);
+                doc.text('Thank you for your business', pageWidth/2, footerStartY + 15, {
+                    align: 'center'
+                });
+                
+                // Website URL below thank you message
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...charcoalColor);
+                doc.text('mckinney.es', pageWidth/2, footerStartY + 25, {
+                    align: 'center'
+                });
+                
+                // Save the PDF
+                doc.save(`Invoice-${data.invoiceNumber}.pdf`);
+            }
+        }
+        
+        // Commented out Supabase integration code
+        /*
+        // Supabase Integration
+        async function initializeSupabase() {
+            // Import the Supabase client
+            const { createClient } = supabase;
+            
+            // Initialize Supabase client
+            const supabaseClient = createClient(
+                'YOUR_SUPABASE_URL',
+                'YOUR_SUPABASE_ANON_KEY'
+            );
+            
+            return supabaseClient;
+        }
+        
+        async function saveInvoiceToSupabase(invoiceData) {
+            try {
+                const supabaseClient = await initializeSupabase();
+                
+                // Insert invoice data into Supabase
+                const { data, error } = await supabaseClient
+                    .from('invoices')
+                    .insert([invoiceData]);
+                
+                if (error) throw error;
+                
+                console.log('Invoice saved to Supabase:', data);
+                return data;
+            } catch (error) {
+                console.error('Error saving to Supabase:', error);
+                throw error;
+            }
+        }
+        
+        // Note: To fully implement Supabase integration with Clerk authentication:
+        // 1. Enable Row Level Security (RLS) on the invoices table
+        // 2. Create policies that check the JWT from Clerk
+        // 3. Configure Supabase to use Clerk as an external JWT provider
+        // 4. Pass the user's JWT token with each Supabase request
+        */
+        
+        // Initialize Clerk when the page loads
+        document.addEventListener('DOMContentLoaded', initializeClerk);
+    </script>
+</body>
+</html>

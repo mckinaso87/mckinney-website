@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y8H1P7LSF3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-Y8H1P7LSF3');
+    </script>
+    <title>David McKinney - Professional Resume</title>
+    <meta name="description" content="Professional resume of David McKinney - Business Growth & Leadership Development Expert">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/resume.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Clerk SDK for authentication -->
+    <script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@latest/dist/clerk.browser.js"></script>
+    
+    <script>
+        // Initialize Clerk with your publishable key
+        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
+        
+        // Hide content until authentication is confirmed
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide the resume content initially
+            const resumeContent = document.getElementById('resume-content');
+            if (resumeContent) resumeContent.style.display = 'none';
+            
+            // Create loading indicator if it doesn't exist
+            let loadingElement = document.getElementById('loading-auth');
+            if (!loadingElement) {
+                loadingElement = document.createElement('div');
+                loadingElement.id = 'loading-auth';
+                loadingElement.className = 'loading';
+                loadingElement.style.display = 'flex';
+                loadingElement.style.justifyContent = 'center';
+                loadingElement.style.alignItems = 'center';
+                loadingElement.style.position = 'fixed';
+                loadingElement.style.top = '0';
+                loadingElement.style.left = '0';
+                loadingElement.style.right = '0';
+                loadingElement.style.bottom = '0';
+                loadingElement.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+                loadingElement.style.zIndex = '2000';
+                loadingElement.innerHTML = '<div class="spinner"></div><p>Authenticating...</p>';
+                document.body.appendChild(loadingElement);
+            } else {
+                loadingElement.style.display = 'flex';
+            }
+            
+            // Initialize Clerk properly
+            initializeClerk();
+        });
+        
+        // Initialize Clerk with proper hydration handling
+        async function initializeClerk() {
+            try {
+                // Initialize Clerk
+                window.Clerk = window.Clerk || {};
+                window.clerkAsyncInit = function() {
+                    Clerk.load({
+                        publishableKey: clerkPublishableKey,
+                        // IMPORTANT: No redirects configured here
+                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                    });
+                };
+                
+                // Wait for Clerk to be fully loaded and hydrated
+                await waitForClerkHydration();
+                
+                // Now check authentication state
+                checkAuthState();
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                // Show manual sign-in UI instead of redirecting
+                hideLoading();
+                showAuthUI();
+            }
+        }
+        
+        // Wait for Clerk to be fully loaded and hydrated
+        async function waitForClerkHydration() {
+            return new Promise((resolve) => {
+                if (window.Clerk && window.Clerk.isReady()) {
+                    resolve();
+                    return;
+                }
+                
+                // Set a timeout to prevent infinite waiting
+                const timeout = setTimeout(() => {
+                    console.warn('Clerk hydration timeout');
+                    resolve();
+                }, 5000);
+                
+                // Check periodically
+                const interval = setInterval(() => {
+                    if (window.Clerk && window.Clerk.isReady()) {
+                        clearInterval(interval);
+                        clearTimeout(timeout);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+        
+        // Hide loading indicator
+        function hideLoading() {
+            const loadingElement = document.getElementById('loading-auth');
+            if (loadingElement) loadingElement.style.display = 'none';
+        }
+        
+        // Check authentication state after Clerk is fully hydrated
+        function checkAuthState() {
+            const resumeContent = document.getElementById('resume-content');
+            
+            // Only proceed if Clerk is fully loaded
+            if (!window.Clerk || !window.Clerk.isReady()) {
+                hideLoading();
+                showAuthUI();
+                return;
+            }
+            
+            // Check if user is authenticated
+            if (Clerk.user) {
+                // User is authenticated, show content
+                if (resumeContent) resumeContent.style.display = 'block';
+                hideLoading();
+                
+                // Mount user button
+                mountUserButton();
+            } else {
+                // User is not authenticated, show sign-in UI
+                hideLoading();
+                showAuthUI();
+            }
+        }
+        
+        // Mount user button
+        function mountUserButton() {
+            const userButton = document.getElementById('user-button');
+            if (userButton && window.Clerk && window.Clerk.isReady()) {
+                userButton.innerHTML = '';
+                Clerk.mountUserButton(userButton, {
+                    afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
+                    appearance: {
+                        elements: {
+                            rootBox: {
+                                width: '110px',
+                                height: '40px'
+                            },
+                            avatarBox: {
+                                width: '32px',
+                                height: '32px'
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Show authentication UI
+        function showAuthUI() {
+            // Create auth prompt
+            const authDiv = document.createElement('div');
+            authDiv.className = 'auth-prompt';
+            authDiv.style.textAlign = 'center';
+            authDiv.style.padding = '2rem';
+            authDiv.style.backgroundColor = '#fff';
+            authDiv.style.borderRadius = '8px';
+            authDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+            authDiv.style.margin = '100px auto';
+            authDiv.style.maxWidth = '500px';
+            
+            authDiv.innerHTML = `
+                <h2>Authentication Required</h2>
+                <p>You need to be signed in to access the Resume.</p>
+                <a href="https://accounts.mckinney.es/sign-in" class="auth-button">Sign In</a>
+            `;
+            
+            // Insert before resume content
+            const resumeContainer = document.querySelector('.resume-container');
+            if (resumeContainer) {
+                resumeContainer.prepend(authDiv);
+            } else {
+                document.body.appendChild(authDiv);
+            }
+        }
+    </script>
+    
+    <style>
+        /* Auth button styles */
+        .user-auth {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+        
+        .auth-button {
+            background-color: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-family: 'Inter', sans-serif;
+            font-size: var(--text-sm);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .auth-button:hover {
+            background-color: var(--chocolate-light);
+        }
+        
+        /* Fix for Clerk UserButton */
+        #user-button {
+            min-width: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            height: 40px;
+        }
+        
+        /* Clerk UserButton overrides */
+        .cl-userButtonBox {
+            width: 110px !important;
+            height: 40px !important;
+        }
+        
+        .cl-userButtonAvatarBox {
+            width: 32px !important;
+            height: 32px !important;
+        }
+    </style>
+    
+    <script>
+        // Initialize Clerk with your publishable key
+        const clerkPublishableKey = 'pk_test_cm9idXN0LWFscGFjYS05OS5jbGVyay5hY2NvdW50cy5kZXYk'; // Will be replaced with production key
+        
+        // Use a flag to prevent redirect loops
+        const authAttempted = sessionStorage.getItem('authAttempted');
+        
+        // If we're coming back from a sign-in attempt, don't redirect again
+        if (window.location.href.includes('?') || authAttempted === 'true') {
+            // Initialize Clerk when the page loads
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Show loading indicator
+                const resumeContent = document.getElementById('resume-content');
+                if (resumeContent) {
+                    resumeContent.style.display = 'none';
+                }
+                
+                const loadingElement = document.createElement('div');
+                loadingElement.id = 'loading-auth';
+                loadingElement.className = 'loading';
+                loadingElement.style.display = 'flex';
+                loadingElement.innerHTML = '<div class="spinner"></div><p>Authenticating...</p>';
+                document.querySelector('main').prepend(loadingElement);
+                
+                // Start Clerk
+                window.Clerk = window.Clerk || {};
+                window.clerkAsyncInit = function() {
+                    Clerk.load({
+                        // Configure Clerk with your publishable key
+                        publishableKey: clerkPublishableKey,
+                        // Set allowed redirect URLs
+                        allowedRedirectOrigins: ['https://mckinney.es', 'http://localhost:8000', 'https://accounts.mckinney.es']
+                    });
+                };
+                
+                // Wait for Clerk to load
+                if (!window.Clerk || !window.Clerk.isReady()) {
+                    await new Promise(resolve => {
+                        const interval = setInterval(() => {
+                            if (window.Clerk && window.Clerk.isReady()) {
+                                clearInterval(interval);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                }
+                
+                // IMPORTANT: NO AUTOMATIC REDIRECTS
+                // Check if user is signed in
+                if (!Clerk.user) {
+                    // User is not signed in, show sign-in UI
+                    // Create auth prompt
+                    const authDiv = document.createElement('div');
+                    authDiv.className = 'auth-prompt';
+                    authDiv.style.textAlign = 'center';
+                    authDiv.style.padding = '2rem';
+                    authDiv.style.backgroundColor = '#fff';
+                    authDiv.style.borderRadius = '8px';
+                    authDiv.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                    authDiv.style.margin = '100px auto';
+                    authDiv.style.maxWidth = '500px';
+                    
+                    authDiv.innerHTML = `
+                        <h2>Authentication Required</h2>
+                        <p>You need to be signed in to access the Resume.</p>
+                        <a href="https://accounts.mckinney.es/sign-in" class="auth-button" style="margin-top: 1rem; display: inline-block; text-decoration: none;">Sign In</a>
+                    `;
+                    
+                    // Hide resume content
+                    const resumeContainer = document.querySelector('.resume-container');
+                    if (resumeContainer) {
+                        resumeContainer.style.display = 'none';
+                    }
+                    
+                    // Insert before container
+                    document.body.insertBefore(authDiv, resumeContainer);
+                    return;
+                }
+                
+                // Mount the UserButton if the element exists
+                if (document.getElementById('user-button')) {
+                    Clerk.mountUserButton(document.getElementById('user-button'), {
+                        afterSignOutUrl: 'https://accounts.mckinney.es/sign-in',
+                        appearance: {
+                            elements: {
+                                rootBox: {
+                                    width: '110px',
+                                    height: '40px'
+                                },
+                                avatarBox: {
+                                    width: '32px',
+                                    height: '32px'
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                // Show the resume content
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                if (resumeContent) {
+                    resumeContent.style.display = 'block';
+                }
+                
+            } catch (error) {
+                console.error('Error initializing Clerk:', error);
+                
+                // Fallback to development mode
+                const loadingElement = document.getElementById('loading-auth');
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
+                const resumeContent = document.getElementById('resume-content');
+                if (resumeContent) {
+                    resumeContent.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../assets/images/signature-logo.png" alt="David McKinney's Signature Logo">
+                </a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="../index.html#about">About</a></li>
+                    <li class="dropdown">
+                        <a href="../index.html#services">Services</a>
+                        <div class="dropdown-content">
+                            <a href="../services/coaching.html">1:1 Coaching</a>
+                            <a href="../services/business-growth.html">Business Growth</a>
+                            <a href="../services/leadership.html">Leadership Development</a>
+                        </div>
+                    </li>
+                    <li class="dropdown">
+                        <a href="../index.html#resources">Resources</a>
+                        <div class="dropdown-content">
+                            <a href="../blog/index.html">Blog</a>
+                        </div>
+                    </li>
+                    <li><a href="index.html" class="active">Resume</a></li>
+                    <li><a href="https://cal.com/mckinney" class="nav-cta">Schedule a Call</a></li>
+                </ul>
+            </div>
+            <div class="user-auth">
+                <div id="user-button"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="resume-container">
+        <div id="resume-content">
+            <div class="resume-header">
+                <h1>David McKinney</h1>
+                <p class="title">TECHNICAL LEADER DRIVING NETWORK SECURITY, BUSINESS GROWTH & COLLABORATIVE TEAM SUCCESS | FORMER ORACLE LEADER | ADVOCATE FOR COMMUNITY DEVELOPMENT</p>
+                <div class="contact-info">
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                    </svg>
+                    <a href="mailto:david@mckinney.es">david@mckinney.es</a>
+                </div>
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                    </svg>
+                    <a href="tel:+14155627252">+1 (415) 562-7252</a>
+                </div>
+                <div class="contact-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    <span>10560 SW Waterway Ln, Port Saint Lucie, FL 34987</span>
+                </div>
+            </div>
+            <div class="resume-cta">
+                <a href="https://www.linkedin.com/in/david-mckinney-84a1021/" class="primary" target="_blank">View LinkedIn Profile</a>
+                <a href="https://cal.com/mckinney" class="secondary" target="_blank">Schedule a Call</a>
+            </div>
+        </div>
+
+        <section class="resume-section" id="professional-summary">
+            <h2>Professional Summary</h2>
+            <div class="section-content">
+                <p>Throughout my career—from architecting Prolexic Technologies to building a resilient automated network at Zenedge and leading teams at Oracle—I've focused on solving complex challenges by fostering connection, collaboration, and trust.</p>
+                
+                <p>I'm driven by a passion for bringing customers, teams, and organizations together to create impactful solutions that drive growth. I believe that trust is the foundation of meaningful connections, empowering teams to excel and fostering long-term partnerships.</p>
+                
+                <p>Equally, I believe in the power of community development, where initiatives that foster purpose and belonging not only transform people but also deliver tangible business value.</p>
+            </div>
+        </section>
+
+        <section class="resume-section" id="core-competencies">
+            <h2>Core Competencies</h2>
+            <div class="section-content">
+                <div class="competency-group">
+                    <h3>Leadership & Strategy</h3>
+                    <ul class="skills-list">
+                        <li>Team Leadership & Development</li>
+                        <li>Business Development</li>
+                        <li>Strategic Planning</li>
+                        <li>Product Development</li>
+                        <li>Stakeholder Communication</li>
+                        <li>KPI & OKR Delivery</li>
+                        <li>Scaling & Capacity Management</li>
+                        <li>Employee Development</li>
+                        <li>Budgeting & Resource Allocation</li>
+                    </ul>
+                </div>
+
+                <div class="competency-group">
+                    <h3>Technical Skills</h3>
+                    <ul class="skills-list">
+                        <li>AI Integration & Prompt Engineering</li>
+                        <li>No-Code Automation Solutions</li>
+                        <li>DDoS Mitigation</li>
+                        <li>Network Architecture</li>
+                        <li>Transit & Peering</li>
+                        <li>Threat Intelligence</li>
+                        <li>TCP/IP & Interconnect</li>
+                        <li>Deep Packet Inspection & Forensics</li>
+                        <li>WAF & WIDS Systems</li>
+                        <li>Firewall & Load Balancer Configuration</li>
+                        <li>SIEM Solutions</li>
+                        <li>AWS & Oracle Cloud</li>
+                        <li>Ansible & Terraform</li>
+                    </ul>
+                </div>
+
+                <div class="competency-group">
+                    <h3>Methodologies & Processes</h3>
+                    <ul class="skills-list">
+                        <li>Scrum Master</li>
+                        <li>Agile Methodologies</li>
+                        <li>Process Optimization</li>
+                        <li>Workflow Automation</li>
+                        <li>Change Management</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="experience">
+            <h2>Professional Experience</h2>
+            <div class="section-content">
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Director, Network Engineering</h3>
+                            <div class="company">Oracle (OCI)</div>
+                        </div>
+                        <div class="date">Apr 2018 - Nov 2024</div>
+                    </div>
+                    <p class="experience-overview">
+                        Led a team of 2 senior managers and 22 engineers, driving the vision of internet transit, peering, interconnects and DDOS for Oracle Cloud.
+                    </p>
+                    <ul class="achievements">
+                        <li>Led efforts in automation to reduce operational dependencies and ticket workload by 90%</li>
+                        <li>Drove re-design in config architecture to allow for use of the Oracle backbone and routing anywhere within the Oracle Cloud. This increased customer performance to endpoint workloads from variable 70-90ms to consistent 60-70ms</li>
+                        <li>Scaled our peering interconnectivity from 30% to 50% with the objective to utilize SFI's and reduce transit cost consumption over time</li>
+                        <li>Provided $6M/year cost savings by leading efforts to re-architect DDoS with a centralized control plane and the ability to effectively distribute attack traffic across multiple geographical locations</li>
+                        <li>Scaled the DDOS mitigation capacity by over 300%</li>
+                        <li>Drove efforts to reduce DDoS supplier CAPEX and OPEX costs by over 62%</li>
+                        <li>Drove the network migration of services with a run rate of over half a billion dollars from classic environment to next generation infrastructure</li>
+                        <li>Implemented Network Intrusion Detection systems to meet government compliance requirements</li>
+                        <li>Drove internet, backbone, and DDoS engineering requirements for OCI's new product announced at the 2024 Cloud World</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Founding Director, Network Protection and Product Development</h3>
+                            <div class="company">Zenedge</div>
+                        </div>
+                        <div class="date">Jan 2015 - Apr 2018</div>
+                    </div>
+                    <p class="experience-overview">
+                        Led a team of 10 individual contributors across several organizations including Network Infrastructure, product development, operations, and customer provisioning.
+                    </p>
+                    <ul class="achievements">
+                        <li>Drove products that led to a run rate of over $2 million in less than 3 years</li>
+                        <li>Primary driving force to close deals with very large enterprise customers and service providers</li>
+                        <li>Led all technical communication for the Oracle acquisition</li>
+                        <li>Single-handedly designed, built, tested, and deployed 10 scrubbing centers. This included the network foundation that protected top enterprise networks, service providers, exchange and peering points across the world against Denial of Service Attacks (DDoS), as well as, the bare-metal infrastructure that ran all Zenedge WAF products</li>
+                        <li>Built the first automated on-demand service, the first truly automated routing mechanism on the planet, used to divert attack traffic through Zenedge's scrubbing sites without the need of the interaction of any engineers. Customer benefit of not having traffic routed over a scrubbing service 24/7 and not having to have on-call engineers wake up in the middle of the night during an attack to make manual routing decisions. We were able to do this within 60 seconds, including BGP convergence time, from the time of the initial alert</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Senior Engineer/Senior Manager</h3>
+                            <div class="company">Akamai Technologies</div>
+                        </div>
+                        <div class="date">Jan 2014 - Jan 2015</div>
+                    </div>
+                    <p class="experience-overview">
+                        Supported teams after the Prolexic acquisition by Akamai and built the first world class security operations center in Florida.
+                    </p>
+                    
+                    <div class="role-section">
+                        <h4>Management Transition Role</h4>
+                        <ul class="achievements">
+                            <li>Trained staff on DDoS/Network Architecture</li>
+                            <li>Technical reporting and metrics</li>
+                            <li>Technical Interviews</li>
+                            <li>Process definitions and workflow</li>
+                        </ul>
+                    </div>
+
+                    <div class="role-section">
+                        <h4>Engineering Support</h4>
+                        <p class="section-intro">Continued primary escalation support for all network and security issues:</p>
+                        <ul class="achievements">
+                            <li>Network architecture and latency troubleshooting</li>
+                            <li>Attack mitigation and security response</li>
+                            <li>Transit and peering optimization</li>
+                            <li>Enterprise service validation and deployment</li>
+                            <li>Infrastructure management including MPLS backbone, link aggregation, and route propagation</li>
+                            <li>Implementation and configuration of enterprise-level protocols: IPSEC, GRE, BGP, OSPF, EIGRP, VRF, MPLS, MPLS VPN's, Netflow, SNMP, HSRP, VRRP, GLBP, BFD, VLANS, IP SLA, L2VPN, DMVPN</li>
+                            <li>Route management and optimization during attack scenarios</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Senior Network Protection Leader</h3>
+                            <div class="company">Prolexic Technologies</div>
+                        </div>
+                        <div class="date">Mar 2005 - Jan 2015</div>
+                    </div>
+                    <p class="experience-overview">
+                        Implemented and supported protection for over 500 enterprise clients over an 8 year period. This included protection from attacks and threats at layer 3 through 7.
+                    </p>
+                    <ul class="achievements">
+                        <li>Audited security countermeasures and ensured compliance with best practices</li>
+                        <li>Owned and identified high priority network issues</li>
+                        <li>Specialized in Proprietary & Enterprise DDoS Mitigation Appliances, TCP/IP architecture, Deep Packet Inspection & Analysis, and Penetration Analysis</li>
+                        <li>Led complex Distributed Denial of Service attack mitigation efforts</li>
+                        <li>Conducted POC penetration testing validation with clients using third party appliances</li>
+                        <li>Drove top technical conversations and presentations to very large organizations</li>
+                        <li>Served as the primary technical authority for all product-related inquiries</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Operations Manager</h3>
+                            <div class="company">Prolexic Technologies (Formerly Digidefense)</div>
+                        </div>
+                        <div class="date">Feb 2004 - Mar 2005</div>
+                    </div>
+                    <p class="experience-overview">
+                        Joined as the 4th employee in a new venture start-up called Digidefense, which later became Prolexic Technologies.
+                    </p>
+                    <ul class="achievements">
+                        <li>Coordinated and established the company's first office location</li>
+                        <li>Configured and deployed the LAN infrastructure and operational support systems</li>
+                        <li>Developed and implemented centralized contract, billing, and payment systems</li>
+                        <li>Led recruitment for key positions including legal/accounting, office administration, and engineering roles</li>
+                    </ul>
+                </div>
+
+                <div class="experience-item consulting-section">
+                    <div class="experience-header">
+                        <div class="title-company">
+                            <h3>Business Development & Growth Strategy Consultant</h3>
+                            <div class="company">Independent Consulting</div>
+                        </div>
+                    </div>
+                    <p class="experience-overview">
+                        Spearheaded business development initiatives for multiple companies, gaining deep expertise in revenue operations, marketing strategies, and sales processes through hands-on experience at Neurogrowth. Applied this comprehensive RevOps knowledge to optimize business development strategies for subsequent clients.
+                    </p>
+                    
+                    <div class="expertise-areas">
+                        <h4>Areas of Expertise</h4>
+                        <ul class="expertise-list">
+                            <li>Business Development Strategy</li>
+                            <li>Revenue Operations (RevOps)</li>
+                            <li>Sales Process Implementation</li>
+                            <li>Marketing Integration</li>
+                            <li>Lead Generation & Pipeline Management</li>
+                            <li>Operational Efficiency</li>
+                        </ul>
+                    </div>
+
+                    <div class="client-section">
+                        <h4>Select Clients</h4>
+                        <ul class="client-list">
+                            <li>
+                                <span class="client-name">Prolexic Technologies</span>
+                                <span class="client-location">United States</span>
+                            </li>
+                            <li>
+                                <span class="client-name">Zenedge</span>
+                                <span class="client-location">United States</span>
+                            </li>
+                            <li>
+                                <span class="client-name">Telecom Logistics S.A.</span>
+                                <span class="client-location">Costa Rica</span>
+                            </li>
+                            <li>
+                                <span class="client-name">Neurogrowth</span>
+                                <span class="client-location">United States</span>
+                            </li>
+                            <li>
+                                <span class="client-name">AII.cr</span>
+                                <span class="client-location">Costa Rica</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="education">
+            <h2>Education</h2>
+            <div class="section-content">
+                <div class="education-item">
+                    <div class="education-header">
+                        <div class="degree-info">
+                            <h3>Bachelor of Arts (B.A)</h3>
+                            <div class="major">Sound Engineering and Production</div>
+                        </div>
+                        <div class="education-date">May 1993</div>
+                    </div>
+                    <div class="institution">
+                        University of Arizona - Conservatory of Recording Arts and Sciences
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="patents">
+            <h2>Patents</h2>
+            <div class="section-content">
+                <div class="patents-list">
+                    <div class="patent-item">
+                        <div class="patent-header">
+                            <h3>Qualifying client behavior to mitigate attacks on a host</h3>
+                            <div class="patent-info">
+                                <span class="patent-number">US 10623376</span>
+                                <span class="patent-date">Issued Apr 14, 2020</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="patent-item">
+                        <div class="patent-header">
+                            <h3>Detecting human activity to mitigate attacks on a host</h3>
+                            <div class="patent-info">
+                                <span class="patent-number">US 20170223049</span>
+                                <span class="patent-date">Issued Aug 3, 2017</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="certifications">
+            <h2>Professional Development & Certifications</h2>
+            <div class="section-content">
+                <div class="certifications-grid">
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">IBM Artificial Intelligence Fundamentals</div>
+                            <div class="cert-date">December 2024</div>
+                        </div>
+                        <div class="cert-issuer">IBM</div>
+                    </div>
+
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">Wireshark Certified Network Analyst</div>
+                            <div class="cert-date">August 2014</div>
+                        </div>
+                        <div class="cert-issuer">
+                            <span class="issuer-name">Wireshark</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">IPV6 Fundamentals, Design and Deployment</div>
+                            <div class="cert-date">December 2012</div>
+                        </div>
+                        <div class="cert-issuer">
+                            <span class="issuer-name">Cisco</span>
+                            <span class="cert-id">Credential ID 93487</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">CCNP R&S</div>
+                            <div class="cert-date">December 2010</div>
+                        </div>
+                        <div class="cert-issuer">
+                            <span class="issuer-name">Cisco</span>
+                            <span class="cert-id">Credential ID CSCO11804467</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">Information Security Awareness in the Workplace</div>
+                            <div class="cert-date">May 2007</div>
+                        </div>
+                        <div class="cert-issuer">
+                            <span class="issuer-name">Infraguard</span>
+                            <span class="cert-id">Certificate #CfISA1004982</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-item">
+                        <div class="cert-header">
+                            <div class="cert-title">Foundry Networks Routing and Switching</div>
+                            <div class="cert-date">April 2005</div>
+                        </div>
+                        <div class="cert-issuer">
+                            <span class="issuer-name">Foundry</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="key-projects">
+            <h2>Key Projects</h2>
+            <div class="section-content">
+                <div class="project-list">
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>Business Process Automation & AI Integration</h3>
+                            <span class="project-date">2025</span>
+                        </div>
+                        <ul class="project-achievements">
+                            <li>Architected and implemented comprehensive workflow automation system for Neurogrowth, integrating AI research capabilities and centralizing lead management processes</li>
+                            <li>Designed and deployed enterprise data warehouse solution to consolidate workflow data and enable advanced analytics</li>
+                            <li>Developed automated lead research and messaging system, significantly reducing manual processing time</li>
+                            <li>Led development of AI-powered customer service chatbot for ISP client, enhancing customer support efficiency</li>
+                            <li>Streamlined and automated customer billing workflows, improving accuracy and reducing processing time</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>Automated DDoS Operations</h3>
+                            <span class="project-date">2023-2024</span>
+                        </div>
+                        <div class="project-description">
+                            Led the development and implementation of numerous automation tools and processes, significantly enhancing operational efficiency and security:
+                        </div>
+                        <ul class="project-achievements">
+                            <li>API-driven configuration push to DDoS appliances</li>
+                            <li>Standardized configuration templates for increased consistency and reduced human error</li>
+                            <li>Automated DDoS appliance upgrades</li>
+                            <li>Integration with operational automation frameworks for streamlined operations</li>
+                            <li>Automated security and compliance rotations for enhanced security posture</li>
+                            <li>Automated SNMPv3 rotations for improved security compliance</li>
+                            <li>Standardized DDoS appliance configuration consistency checker</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>WIDS Implementation for Government</h3>
+                            <span class="project-date">2021-2022</span>
+                        </div>
+                        <div class="project-description">
+                            Led a cross-functional team across 7 organizations to implement a physical Wireless Intrusion Detection System (WIDS) for a major government contract. The system detects rogue wireless signals across data center halls and secure access spaces.
+                        </div>
+                        <ul class="project-achievements">
+                            <li>Coordinated with Security, DNS, Data Center, Corporate Security teams</li>
+                            <li>Integrated with Physical Networking, GOVOPS, and SECOPS</li>
+                            <li>Successfully deployed WIDS across secure facilities</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>Bare-metal vs Hypervisor Performance Analysis</h3>
+                            <span class="project-date">2018</span>
+                        </div>
+                        <div class="project-description">
+                            Conducted comprehensive performance analysis comparing bare-metal hosts against virtualized hypervisors under distributed packet flood conditions.
+                        </div>
+                        <ul class="project-achievements">
+                            <li>Performed stress testing with distributed packet per second floods</li>
+                            <li>Optimized smartNIC configurations for kernel offload processing</li>
+                            <li>Delivered data-driven recommendations for infrastructure decisions</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>Automated Routing Control</h3>
+                            <span class="project-date">2017</span>
+                        </div>
+                        <div class="project-description">
+                            Pioneered the first automated routed attack scrubbing service, dramatically improving response times and service protection capabilities.
+                        </div>
+                        <ul class="project-achievements">
+                            <li>Reduced attack contingency plan execution from 24 hours to under 5 minutes</li>
+                            <li>Enabled comprehensive protection for all ports and services</li>
+                            <li>Implemented automated routing control for DDoS mitigation</li>
+                        </ul>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-header">
+                            <h3>Security Operations Center</h3>
+                            <span class="project-date">2014</span>
+                        </div>
+                        <div class="project-description">
+                            Established the first world-class Security Operations Center, implementing comprehensive monitoring and support systems.
+                        </div>
+                        <ul class="project-achievements">
+                            <li>Designed physical layout and monitoring systems</li>
+                            <li>Implemented 24x7 follow-the-sun support model</li>
+                            <li>Structured 4x10 overlapping shift schedule for continuous coverage</li>
+                            <li>Developed custom security monitoring tooling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="community-service">
+            <h2>Community Service</h2>
+            <div class="section-content">
+                <div class="service-item">
+                    <div class="service-header">
+                        <h3>Baha'i World Center</h3>
+                        <div class="service-location">Haifa, Israel</div>
+                    </div>
+                    <div class="service-description">
+                        Volunteering work - Coordinated and organized groups of hundreds of visitors weekly from around the world over a 2-year period.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="resume-section" id="languages">
+            <h2>Languages</h2>
+            <div class="section-content">
+                <div class="languages-grid">
+                    <div class="language-item">
+                        <span class="language-name">English</span>
+                        <span class="proficiency-level">Native</span>
+                    </div>
+                    <div class="language-item">
+                        <span class="language-name">Spanish</span>
+                        <span class="proficiency-level">Native</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="download-section">
+            <a href="assets/david-mckinney-resume.pdf" class="download-link" download>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 16l-4-4h3V4h2v8h3l-4 4zm9-13v18H3V3h18zm-2 2H5v14h14V5z"/>
+                </svg>
+                Download Resume PDF
+            </a>
+        </div>
+    </div><!-- End of resume-content -->
+
+        <footer>
+            <div class="footer-content">
+                <p>&copy; 2025 David McKinney. All rights reserved. | <a href="../privacy/cookie-consent.html">Cookie Settings</a></p>
+                <a href="https://www.linkedin.com/in/david-mckinney-84a1021/" class="linkedin-button" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                </a>
+            </div>
+        </footer>
+
+        <script src="../js/main.js"></script>
+        <script src="../js/cookie-consent.js"></script>
+    </body>
+</html>

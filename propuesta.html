@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propuesta de Desarrollo Web Profesional - David McKinney</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Core colors */
+            --charcoal-dark: #2B2B2B;
+            --charcoal: #333333;
+            --charcoal-light: #404040;
+            --chocolate: #6B4423;
+            --chocolate-light: #8B5E34;
+            --cream: #F5E6D3;
+            --bone-white: #F8F6F1;
+            --accent-warm: #D7CCC8;
+            --accent-blue: #0077B5;
+            --text-light: #FFFFFF;
+            --text-muted: #B0BEC5;
+            
+            /* Background options */
+            --bg-primary: #F4F6F8;
+            --bg-secondary: #E8ECF0;
+            
+            /* Transparency and UI colors */
+            --header-bg: rgba(43, 43, 43, 0.95);
+            --card-bg: rgba(51, 51, 51, 0.97);
+            --card-hover: rgba(64, 64, 64, 0.98);
+            --chocolate-trans: rgba(107, 68, 35, 0.95);
+            --chocolate-light-trans: rgba(139, 94, 52, 0.9);
+            
+            /* Measurements */
+            --border-radius: 12px;
+            --border-radius-lg: 20px;
+            --max-width: 1000px;
+            
+            /* Font sizes */
+            --text-xs: 0.75rem;    /* 12px */
+            --text-sm: 0.875rem;   /* 14px */
+            --text-base: 0.875rem;  /* 14px */
+            --text-lg: 1rem;       /* 16px */
+            --text-xl: 1.125rem;   /* 18px */
+            --text-2xl: 1.25rem;   /* 20px */
+            --text-3xl: 1.5rem;    /* 24px */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--charcoal-dark);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            background-attachment: fixed;
+            font-size: var(--text-base);
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 21cm;
+            margin: 0 auto;
+            background-color: white;
+            padding: 1.75cm;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .content-wrapper {
+            padding: 0;
+            text-align: left;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-bottom: 2px solid var(--chocolate);
+        }
+
+        .logo {
+            max-width: 250px;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            color: var(--chocolate);
+            font-size: var(--text-xl);
+            text-align: center;
+            margin: 0 0 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--chocolate);
+            font-size: var(--text-lg);
+            margin: 0 0 1.5rem;
+            opacity: 0.9;
+            text-align: center;
+        }
+
+        h2 {
+            color: var(--chocolate);
+            font-size: var(--text-base);
+            margin: 0.5rem 0;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .greeting {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 1.5rem 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem 2rem;
+            font-size: var(--text-base);
+        }
+
+        ul ul {
+            columns: 1;
+            margin: 0.25rem 0;
+        }
+
+        li {
+            margin-bottom: 1rem;
+            line-height: 1.35;
+            position: relative;
+            padding-left: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        li:before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--chocolate);
+        }
+
+        li strong {
+            display: block;
+            color: var(--chocolate);
+            font-size: var(--text-lg);
+            margin-bottom: 0.1rem;
+        }
+
+        li ul {
+            margin-top: 0.25rem;
+        }
+
+        .highlight {
+            background-color: var(--charcoal);
+            color: var(--text-light);
+            padding: 1.75rem;
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            page-break-inside: avoid;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        .highlight h2 {
+            color: var(--chocolate);
+            margin-top: 0;
+        }
+
+        .price {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--cream);
+            margin: 1rem 0;
+            text-align: left;
+        }
+
+        .payment-terms {
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+
+
+        .signature {
+            display: block;
+            filter: brightness(0) invert(1);
+            height: 30px;
+            margin: 0.5rem 0;
+        }
+
+        .contact {
+            margin-top: 0.25rem;
+            font-size: var(--text-sm);
+            opacity: 0.9;
+        }
+
+        @media print {
+            @page {
+                margin: 1.75cm;
+                size: A4;
+            }
+
+            body {
+                background: none;
+                margin: 0;
+                padding: 0;
+                font-size: 11pt;
+                line-height: 1.4;
+                max-width: 100%;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                padding: 0 2.5cm;
+            }
+            
+            .content-wrapper {
+                padding: 0;
+            }
+
+            .header {
+                margin-bottom: 0.5rem;
+            }
+            
+            .print-button {
+                display: none;
+            }
+
+            ul {
+                padding: 0;
+                margin: 0.75rem 0;
+                page-break-inside: avoid;
+            }
+
+            li {
+                margin-bottom: 0.3rem;
+                page-break-inside: avoid;
+            }
+
+            .section {
+                margin-bottom: 0.75rem;
+            }
+
+            .highlight {
+                padding: 1rem;
+                margin: 0.75rem 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: var(--charcoal) !important;
+            }
+
+            .footer {
+                margin-top: 1rem;
+                padding-top: 0.75rem;
+            }
+        }
+        
+        .print-button {
+            background-color: var(--chocolate);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: 'Inter', sans-serif;
+            font-size: var(--text-base);
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 2rem auto 0;
+        }
+        
+        .print-button:hover {
+            background-color: var(--chocolate-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Propuesta de Desarrollo Web Profesional</h1>
+        <div class="subtitle">Aplicación Web Take Care.cr</div>
+        </div>
+        <div class="content-wrapper">
+        
+        <p>Hola Catalina,</p>
+        
+        <p style="margin: 1rem 0 2rem; font-size: var(--text-lg);">Preparé esta propuesta que cubre todo lo necesario para que tengas una plataforma moderna, funcional y fácil de gestionar desde el primer día.</p>
+        
+        <h2 style="margin: 1.5rem 0 0.75rem;">Este proyecto incluye:</h2>
+            <ul>
+                <li>
+                    <strong>Registro de dominio</strong>
+                    <span>Registro inicial del dominio web personalizado con tu marca</span>
+                </li>
+                <li>
+                    <strong>Correo profesional</strong>
+                    <span>Configuración de correos tipo info@tudominio.com con tu marca</span>
+                </li>
+                <li>
+                    <strong>Sitio web dinámico</strong>
+                    <span>Plataforma con proceso de compra integrado con SINPE móvil</span>
+                </li>
+                <li>
+                    <strong>Automatización</strong>
+                    <span>Sistema automático de confirmaciones y seguimiento de pedidos</span>
+                </li>
+                <li>
+                    <strong>Infraestructura</strong>
+                    <span>Base de datos optimizada y hosting de alto rendimiento incluido</span>
+                </li>
+                <li>
+                    <strong>Panel administrativo</strong>
+                    <span>Control total de ventas, productos, inventario y gestión de pedidos</span>
+                </li>
+                <li>
+                    <strong>Seguridad</strong>
+                    <span>Acceso protegido al panel administrativo con cifrado SSL</span>
+                </li>
+                <li>
+                    <strong>Tecnología</strong>
+                    <span>Plataforma moderna y escalable que crece con tu negocio</span>
+                </li>
+                <li>
+                    <strong>Soporte</strong>
+                    <span>Asistencia técnica y mantenimiento por 60 días post-implementación</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="highlight">
+            <div>
+                <h2 style="color: var(--cream); margin-top: 0;">Inversión Total</h2>
+                <div class="price">₡390,000 colones</div>
+                <p style="margin: 1rem 0;">Forma de pago: 50% al iniciar y 50% al entregar el sitio completamente funcional, por medio de Link de pago (Apple Pay, tarjetas) o SINPE Móvil/transferencia.</p>
+            </div>
+            <div>
+                <p style="margin: 0 0 1rem;">Este precio representa un descuento significativo sobre mis <a href="https://mckinney.es/services/website-development.html" target="_blank" style="color: var(--cream); text-decoration: underline;">paquetes estándar de desarrollo web</a> (valor regular $1,499 USD).</p>
+                <p>Si estás de acuerdo, coordinamos una breve reunión para definir detalles del proyecto.</p>
+                <p>Estoy a tu disposición para cualquier duda.</p>
+                <p style="margin: 1.5rem 0 1rem; opacity: 0.9;">Un saludo,</p>
+            </div>
+            <div style="grid-column: 1 / -1; margin-top: 1rem;">
+                <img src="assets/images/signature-logo.png" alt="David McKinney Logo" class="signature" style="height: 30px; margin: 0.5rem 0;">
+                <div class="contact">
+                    <p>8701-1786 | lead@mckinney.es</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="print-button" onclick="window.print()" style="display: none;">Imprimir PDF</button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add any additional functionality here if needed
+        });
+    </script>
+</body>
+</html>
