@@ -16,57 +16,111 @@ const translations = {
     "Essential Package": "Paquete Esencial",
     "Professional Package": "Paquete Profesional",
     "Enterprise Package": "Paquete Empresarial",
-    "Perfect for small businesses and professionals who need a simple online presence.": 
-    "Perfecto para pequeñas empresas y profesionales que necesitan una presencia en línea simple.",
-    "Perfect for businesses that need to regularly update content and manage basic user interactions.": 
-    "Perfecto para empresas que necesitan actualizar contenido regularmente y gestionar interacciones básicas de usuarios.",
-    "For businesses requiring user accounts, payments, and custom functionality.": 
-    "Para empresas que requieren cuentas de usuario, pagos y funcionalidad personalizada.",
+    
+    // Pricing USD to CRC conversions
+    "$799": "₡415,000",
+    "$1,499": "₡779,000",
+    "$2,999": "₡1,559,000",
+    "$800": "₡416,000",
+    "$850": "₡442,000",
+    "$600": "₡312,000",
+    "$500": "₡260,000",
+    "$1,500": "₡780,000",
+    "$1,800": "₡936,000",
+    "$1,200": "₡624,000",
+    "$1,000": "₡520,000",
+    "Simple and powerful website for professionals.": 
+    "Sitio web estático para una presencia confiable en línea.",
+    "Dynamic site with branding and CMS.": 
+    "Sitio dinámico con CMS y branding personalizado.",
+    "Full-featured app with payments & logic.": 
+    "Aplicación web completa con pagos y usuarios.",
     
     // Package features
-    "Static website with up to 5 pages": "Sitio web estático con hasta 5 páginas",
-    "Mobile responsive design": "Diseño adaptable para móviles",
-    "Fast loading optimization": "Optimización de carga rápida",
-    "Basic SEO integration": "Integración básica de SEO",
-    "Contact form setup": "Configuración de formulario de contacto",
-    "Basic social media integration": "Integración básica de redes sociales",
-    "Domain & DNS setup assistance": "Asistencia en configuración de dominio y DNS",
-    "30-day support": "Soporte por 30 días",
-    "Dynamic website with CMS integration": "Sitio web dinámico con integración de CMS",
-    "Custom design elements & branding": "Elementos de diseño personalizados y marca",
-    "Enhanced SEO optimization": "Optimización SEO mejorada",
-    "Advanced social media integration": "Integración avanzada de redes sociales",
-    "Basic user authentication": "Autenticación básica de usuarios",
-    "Content management system": "Sistema de gestión de contenidos",
-    "Simple database functionality": "Funcionalidad básica de base de datos",
-    "Domain & hosting configuration": "Configuración de dominio y alojamiento",
-    "60-day support": "Soporte por 60 días",
-    "Full-featured web application": "Aplicación web completa",
-    "Advanced user authentication": "Autenticación avanzada de usuarios",
-    "Custom user workflows": "Flujos de trabajo personalizados",
-    "Payment processing integration": "Integración de procesamiento de pagos",
-    "Database integration": "Integración de base de datos",
-    "Complete technical setup": "Configuración técnica completa",
-    "90-day priority support": "Soporte prioritario por 90 días",
+    "Up to 5 static pages": "Hasta 5 páginas",
+    "Mobile responsive": "Diseño móvil responsivo",
+    "Speed optimization": "Optimización de velocidad",
+    "Basic SEO": "SEO básico",
+    "Contact form": "Formulario de contacto",
+    "Social media links": "Enlaces sociales",
+    "Domain + DNS setup": "Configuración de dominio y DNS",
+    "Email setup": "1 cuenta de correo electrónico",
+    "Technical setup (Vercel + domain)": "Configuración técnica (Vercel + dominio)",
+    "1 post-launch milestone": "1 hito de soporte post-lanzamiento",
+    "→ Ideal for simple web presence": "→ Ideal para profesionales o pequeños negocios",
+    "CMS with editable content": "CMS editable (ej. Supabase)",
+    "Custom design & branding": "Diseño personalizado",
+    "Advanced SEO": "SEO avanzado",
+    "Social media integration": "Integración social",
+    "Basic auth (Clerk)": "Autenticación básica (Clerk)",
+    "Database support": "Base de datos simple",
+    "Domain + email setup": "Dominio y correo electrónico",
+    "Technical setup (Supabase, Clerk, Vercel)": "Configuración técnica (Supabase, Vercel, Clerk)",
+    "1-hour UX consult": "1 hora de consultoría UX",
+    "2 post-launch milestones": "2 hitos de soporte post-lanzamiento",
+    "→ For businesses growing online": "→ Para negocios en crecimiento",
+    "Full web app (auth, db, payments)": "App con autenticación y pagos",
+    "Custom workflows": "Flujos personalizados",
+    "User roles": "Roles de usuario",
+    "Payment integration": "Integración de pagos",
+    "API integrations": "APIs a medida",
+    "Supabase + Clerk backend": "Backend Supabase + Clerk",
+    "Email + domain setup": "Dominio y correo electrónico",
+    "3 post-launch milestones": "3 hitos de soporte post-lanzamiento",
+    "→ Ideal for startups & digital businesses": "→ Ideal para startups y negocios digitales",
     
     // Add-on sections
-    "Add-On Solutions": "Soluciones Adicionales",
-    "Enhance any package above with these specialized add-on services. Pricing shown is in addition to your selected base package:": 
-    "Mejore cualquier paquete anterior con estos servicios adicionales especializados. Los precios mostrados son adicionales a su paquete base seleccionado:",
-    "Professional Package Add-ons": "Complementos del Paquete Profesional",
-    "Compatible with Professional Package": "Compatible con el Paquete Profesional",
-    "Enterprise Package Add-ons": "Complementos del Paquete Empresarial",
-    "Compatible with Enterprise Package": "Compatible con el Paquete Empresarial",
+    "Add-On Services": "Servicios Adicionales",
+    "Enhance any package with these extra features. Perfect for growing your business without breaking the bank.": 
+    "Mejorá cualquier paquete con funciones premium. Pensados para empresas que quieren crecer en digital sin complicaciones.",
+    "Professional Package Add-Ons": "Complementos para el Paquete Profesional",
+    "Enterprise Package Add-Ons": "Complementos para el Paquete Empresarial",
     
     // Add-on features
-    "Basic Dashboard": "Panel de Control Básico",
-    "Simple E-commerce Features": "Funciones Básicas de Comercio Electrónico",
-    "Advanced Content Management": "Gestión Avanzada de Contenido",
-    "Additional Design Customization": "Personalización Adicional de Diseño",
-    "Custom User Dashboards": "Paneles de Usuario Personalizados",
-    "Advanced E-commerce System": "Sistema Avanzado de Comercio Electrónico",
-    "Complex Workflows": "Flujos de Trabajo Complejos",
-    "Custom API Integrations": "Integraciones API Personalizadas",
+    "Business Insights Dashboard": "Panel de Métricas Interno",
+    "Starter E-Commerce Setup": "E-commerce Inicial",
+    "Flexible Content Editor": "Editor de Contenido Avanzado",
+    "Custom Visual Enhancements": "Personalización Visual Extra",
+    "Personalized User Portals": "Portales de Usuario Personalizados",
+    "Full E-Commerce Integration": "E-commerce Completo",
+    "Custom Automation & Logic": "Automatizaciones y Lógica Avanzada",
+    "API Connectivity & Sync": "Integraciones API Personalizadas",
+    
+    // Add-on descriptions
+    "Track key metrics in a simple internal dashboard": "Dashboard simple para ver estadísticas del negocio",
+    "Add product pages, cart, and checkout functionality": "Página de productos + carrito + checkout",
+    "Make updates easier with enhanced content tools": "Mayor facilidad para editar contenidos",
+    "Deeper design personalization beyond base package": "Ajustes adicionales al diseño del sitio",
+    "Custom dashboards per user role": "Dashboard según el tipo de usuario",
+    "Full store setup with inventory, checkout, and payment processing": "Tienda con pagos, inventario y procesamiento de pagos",
+    "Workflow logic, automations, and advanced forms": "Flujos, lógica condicional y formularios dinámicos",
+    "Connect to external systems like CRMs or ERPs": "Conexión con CRMs u otros sistemas externos",
+    
+    // Bundle discount content
+    "Bundle Discount: Save 10% on 2 add-ons, 15% on 3 add-ons, or 20% on 4+ add-ons!": 
+    "¡Descuento por Paquete: Ahorre 10% en 2 complementos, 15% en 3 complementos, o 20% en 4+ complementos!",
+    "💡 Bundle Discount: Save 10% on 2 add-ons, 15% on 3 add-ons, or 20% on 4+ add-ons!": 
+    "💡 ¡Descuento por Paquete: Ahorre 10% en 2 complementos, 15% en 3 complementos, o 20% en 4+ complementos!",
+    "Bundle Discount Details": "Detalles del Descuento por Paquete",
+    "2 Add-ons": "2 Complementos",
+    "3 Add-ons": "3 Complementos", 
+    "4+ Add-ons": "4+ Complementos",
+    "10% OFF": "10% DESCUENTO",
+    "15% OFF": "15% DESCUENTO",
+    "20% OFF": "20% DESCUENTO",
+    "Example: $800 + $850 = $1,485 (save $165)": "Ejemplo: ₡416,000 + ₡442,000 = ₡772,200 (ahorre ₡85,800)",
+    "Example: $800 + $850 + $600 = $1,912 (save $338)": "Ejemplo: ₡416,000 + ₡442,000 + ₡312,000 = ₡1,015,200 (ahorre ₡175,800)",
+    "Example: $800 + $850 + $600 + $500 = $2,200 (save $550)": "Ejemplo: ₡416,000 + ₡442,000 + ₡312,000 + ₡260,000 = ₡1,144,000 (ahorre ₡286,000)",
+    
+    // Additional translations for the discount examples
+    "$1,485 (save $165)": "₡772,200 (ahorre ₡85,800)",
+    "$1,912 (save $338)": "₡1,015,200 (ahorre ₡175,800)",
+    "$2,200 (save $550)": "₡1,144,000 (ahorre ₡286,000)",
+    "(save $165)": "(ahorre ₡85,800)",
+    "(save $338)": "(ahorre ₡175,800)",
+    "(save $550)": "(ahorre ₡286,000)",
+    "Discounts apply to add-ons from the same package tier. Mix and match any add-ons to qualify!": 
+    "Los descuentos aplican a complementos del mismo paquete. ¡Combine cualquier complemento para calificar!",
     
     // Why choose section
     "Why Choose Our Website Development?": "¿Por Qué Elegir Nuestro Desarrollo de Sitios Web?",
@@ -107,6 +161,9 @@ function translatePage(targetLanguage) {
     if (translateButton) {
         translateButton.textContent = targetLanguage === 'en' ? 'Español' : 'English';
     }
+    
+    // Update URL to reflect language change
+    updateUrl(targetLanguage);
     
     // Handle specific elements by ID
     const whyChooseHeading = document.getElementById('why-choose-heading');
@@ -183,6 +240,43 @@ function translatePage(targetLanguage) {
     });
 }
 
+// Function to check URL for language preference
+function checkUrlLanguage() {
+    const path = window.location.pathname;
+    if (path.includes('/es/')) {
+        // URL indicates Spanish, translate immediately
+        translatePage('es');
+        // Update button text
+        const translateButton = document.getElementById('translate-button');
+        if (translateButton) {
+            translateButton.textContent = 'English';
+        }
+    }
+}
+
+// Function to update URL when language changes
+function updateUrl(language) {
+    const currentPath = window.location.pathname;
+    const currentSearch = window.location.search;
+    const currentHash = window.location.hash;
+    
+    if (language === 'es') {
+        // Add /es/ to the path
+        if (!currentPath.includes('/es/')) {
+            const newPath = currentPath.replace('/services/', '/es/services/');
+            const newUrl = newPath + currentSearch + currentHash;
+            window.history.replaceState({}, '', newUrl);
+        }
+    } else {
+        // Remove /es/ from the path
+        if (currentPath.includes('/es/')) {
+            const newPath = currentPath.replace('/es/services/', '/services/');
+            const newUrl = newPath + currentSearch + currentHash;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }
+}
+
 // Function to add translation button
 function addTranslationButton() {
     // Create the translation button
@@ -191,7 +285,9 @@ function addTranslationButton() {
     translateButton.textContent = 'Español';
     translateButton.className = 'translate-button';
     translateButton.onclick = function() {
-        translatePage(currentLanguage === 'en' ? 'es' : 'en');
+        const newLanguage = currentLanguage === 'en' ? 'es' : 'en';
+        translatePage(newLanguage);
+        updateUrl(newLanguage);
     };
     
     // Add button styles
@@ -231,6 +327,9 @@ function addTranslationButton() {
     // Add elements to the page
     document.head.appendChild(style);
     document.body.appendChild(translateButton);
+    
+    // Check URL for language preference
+    checkUrlLanguage();
 }
 
 // Initialize when the DOM is fully loaded
